@@ -1,5 +1,5 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@/utils/inertia-compat';
+import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
+import { Head, Link, router } from '../utils/inertia-compat';
 import { useState, useEffect } from 'react';
 import { MapPinIcon, UsersIcon, MagnifyingGlassIcon, PlusIcon, FunnelIcon, BoltIcon, CalendarIcon, ChevronLeftIcon, ChevronRightIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 
@@ -349,7 +349,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />
                             </div>
-                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight">EventHub.</span>
+                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight text-black">EventHub.</span>
                         </Link>
                     </nav>
                 </header>

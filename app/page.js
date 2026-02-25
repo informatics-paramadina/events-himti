@@ -1,7 +1,7 @@
 "use client";
 
-import EventsIndex from "@/events/Index.jsx";
-import { dummyEvents } from "@/data/dummyEvents";
+import EventsIndex from "./events/Index";
+import { dummyEvents } from "./data/dummyEvents";
 
 // Transform dummy events to match the expected data structure
 const eventsWithParticipants = dummyEvents.map(event => ({
