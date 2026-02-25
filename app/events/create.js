@@ -514,7 +514,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />
                             </div>
-                            <span className="text-xl font-bold tracking-tight sm:text-2xl font-fredoka">EventHub.</span>
+                            <span className="text-xl font-bold tracking-tight sm:text-2xl font-fredoka text-black">EventHub.</span>
                         </div>
                         <p className="max-w-xs text-xs font-bold sm:text-sm text-slate-400">
                             Platform event kampus terbaik gratis, fun, dan accessible!
@@ -531,8 +531,8 @@ export default function EventsIndex({ auth, events, filters }) {
                         <div className="flex items-center gap-4 mt-2">
                             {['IG', 'TW'].map((s) => (
                                 <div key={s}
-                                    className="flex items-center justify-center w-8 h-8 text-xs font-black transition-colors bg-white rounded-full cursor-pointer sm:w-9 sm:h-9 b-border-2 hover:bg-yellow-400"
-                                    style={{ boxShadow: '2px 2px 0 #000' }}>
+                                    className="flex items-center justify-center w-8 h-8 text-black text-xs font-black transition-colors bg-white rounded-full cursor-pointer sm:w-9 sm:h-9 b-border-2 hover:bg-yellow-400"
+                                    style={{ boxShadow: '2px 2px 0 #000', color: "black" }}>
                                     {s}
                                 </div>
                             ))}
