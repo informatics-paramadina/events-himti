@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/utils/inertia-compat';
 
 export default function NavLink({ active = false, className = '', children, ...props }) {
     return (

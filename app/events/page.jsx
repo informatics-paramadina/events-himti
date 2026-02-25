@@ -1,9 +1,8 @@
-"use client";
+'use client';
 
-import EventsIndex from "@/events/Index.jsx";
-import { dummyEvents } from "@/data/dummyEvents";
+import EventsIndex from './Index';
+import { dummyEvents } from '@/data/dummyEvents';
 
-// Transform dummy events to match the expected data structure
 const eventsWithParticipants = dummyEvents.map(event => ({
   ...event,
   _count: {
@@ -11,7 +10,7 @@ const eventsWithParticipants = dummyEvents.map(event => ({
   },
 }));
 
-export default function Home() {
+export default function EventsPage() {
   return (
     <EventsIndex 
       auth={{ user: null }}
