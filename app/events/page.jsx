@@ -1,7 +1,7 @@
 'use client';
 
 import EventsIndex from './Index';
-import { dummyEvents } from '@/data/dummyEvents';
+import { dummyEvents } from "../data/dummyEvents";
 
 const eventsWithParticipants = dummyEvents.map(event => ({
   ...event,

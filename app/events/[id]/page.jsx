@@ -1,8 +1,8 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import Show from "@/events/Show";
-import { dummyEvents } from "@/data/dummyEvents";
+import Show from "../Show";
+import { dummyEvents } from "../../data/dummyEvents";
 
 export default function ShowEventPage() {
   const params = useParams();

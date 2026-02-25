@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { dummyEvents } from "@/data/dummyEvents";
+import { dummyEvents } from "./data/dummyEvents";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 

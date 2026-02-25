@@ -111,7 +111,7 @@ function HeroCarousel({ events }) {
                         {[ChevronLeftIcon, ChevronRightIcon].map((Icon, i) => (
                             <button key={i}
                                 onClick={() => goTo(i === 0 ? cur - 1 : cur + 1)}
-                                className="flex items-center justify-center w-10 h-10 transition-colors duration-150 bg-white sm:w-12 sm:h-12 b-border rounded-xl sm:rounded-2xl hover:bg-black hover:text-white"
+                                className="flex items-center text-black justify-center w-10 h-10 transition-colors duration-150 bg-white sm:w-12 sm:h-12 b-border rounded-xl sm:rounded-2xl hover:bg-black hover:text-white"
                                 style={{ boxShadow: '4px 4px 0 #000' }}>
                                 <Icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2.5} />
                             </button>
@@ -349,7 +349,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />
                             </div>
-                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight">EventHub.</span>
+                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight text-black">EventHub.</span>
                         </Link>
                     </nav>
                 </header>

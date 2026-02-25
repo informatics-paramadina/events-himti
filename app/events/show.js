@@ -417,10 +417,10 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister }) 
                                 style={{ boxShadow: '3px 3px 0 #1a1a1a' }}>
                                 <BoltIcon className="w-5 h-5 text-black" strokeWidth={3} />
                             </div>
-                            <span className="font-fredoka text-2xl font-bold tracking-tight">EventHub.</span>
+                            <span className="font-fredoka text-2xl font-bold tracking-tight text-black">EventHub.</span>
                         </Link>
                         <Link href="/login"
-                            className="b-btn b-border text-sm font-black uppercase px-4 py-2 rounded-xl bg-white hover:bg-slate-50 hidden sm:block">
+                            className="b-btn text-black b-border text-sm font-black uppercase px-4 py-2 rounded-xl bg-white hover:bg-slate-50 hidden sm:block">
                             Sign In
                         </Link>
                     </div>
@@ -432,7 +432,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister }) 
                             <div className="w-10 h-10 bg-yellow-400 b-border rounded-xl flex items-center justify-center" style={{ boxShadow: '3px 3px 0 #1a1a1a' }}>
                                 <span className="text-xl"></span>
                             </div>
-                            <span className="font-fredoka text-2xl font-bold tracking-tight">EventHub.</span>
+                            <span className="font-fredoka text-2xl font-bold tracking-tight text-black">EventHub.</span>
                         </div>
                         <p className="text-slate-400 font-black text-xs uppercase tracking-widest">&copy; 2026 EventHub Campus. Stay Awesome!</p>
                     </div>
