@@ -1,6 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# HIMTI Event Registration System
 
-## Getting Started
+This is a **Next.js** project bootstrapped with `create-next-app`.
+
+The application is used to manage **event registration**, allowing users to register for campus events while providing an admin dashboard to monitor participants and event capacity.
+
+---
+
+## 🚀 Getting Started
 
 First, run the development server:
 
@@ -14,23 +20,165 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open **http://localhost:3000** with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+You can start editing the page by modifying:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/page.js
+```
 
-## Learn More
+The page auto-updates as you edit the file.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧱 Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Frontend
 
-## Deploy on Vercel
+* Next.js (App Router)
+* Tailwind CSS
+* Heroicons
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Backend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Next.js Route Handlers
+* Prisma ORM
+* Neon PostgreSQL
+
+---
+
+## ⚙️ Backend Setup (Prisma + Neon)
+
+Install dependencies:
+
+```bash
+npm install prisma @prisma/client
+```
+
+Initialize Prisma:
+
+```bash
+npx prisma init
+```
+
+Configure `.env`:
+
+```env
+DATABASE_URL="your-neon-postgresql-url"
+```
+
+Push schema and generate client:
+
+```bash
+npx prisma db push
+npx prisma generate
+```
+
+---
+
+## 🗄️ Database Models
+
+### Event
+
+Stores event information and capacity.
+
+### Participant
+
+Stores participant registration data and references an event.
+
+---
+
+## 📡 API Endpoints
+
+### Events
+
+**GET** `/api/events`
+Retrieve all events.
+
+**POST** `/api/events`
+Create a new event.
+
+---
+
+### Participants
+
+**GET** `/api/participants`
+Retrieve all participants.
+
+**POST** `/api/participants`
+Register a participant.
+
+Includes validation:
+
+* Required field validation
+* Duplicate registration prevention
+* Event existence check
+* Capacity limit enforcement
+
+---
+
+## 📊 Admin Dashboard
+
+The admin dashboard provides:
+
+* Total events
+* Total participants
+* Active events
+* Recent registrations
+* Event capacity monitoring
+
+Data is fetched from:
+
+```
+/api/events
+/api/participants
+```
+
+---
+
+## 🎯 Features
+
+* Event creation
+* Event listing
+* Participant registration
+* Duplicate registration protection
+* Capacity limitation
+* Admin monitoring dashboard
+
+---
+
+## 📘 Learn More
+
+To learn more about Next.js:
+
+* https://nextjs.org/docs
+* https://nextjs.org/learn
+
+You can check out the Next.js GitHub repository:
+
+https://github.com/vercel/next.js
+
+---
+
+## 🚀 Deploy on Vercel
+
+The easiest way to deploy is using:
+
+https://vercel.com/new
+
+For deployment details:
+
+https://nextjs.org/docs/app/building-your-application/deploying
+
+---
+
+## 🔮 Future Improvements
+
+* Admin authentication
+* Event editing & deletion
+* Participant export (Excel)
+* Dashboard analytics
+* Email confirmation system
+
+---

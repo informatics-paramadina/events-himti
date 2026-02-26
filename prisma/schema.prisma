@@ -5,12 +5,12 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -22,5 +22,34 @@ model User {
   status    String
   jurusan   String
   angkatan  String?
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  nama_event  String
+  deskripsi   String?
+  tanggal     DateTime
+  jam         String
+  lokasi      String
+  kapasitas   Int?
+
+  createdAt   DateTime @default(now())
+  participants Participant[]
+}
+
+model Participant {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  email     String
+  nim       String
+  no_wa     String
+  jurusan   String
+  angkatan  String
+  status    String
+
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id])
+
   createdAt DateTime @default(now())
 }
