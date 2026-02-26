@@ -2,12 +2,41 @@
 
 import { useParams } from 'next/navigation';
 import Show from "../Show";
-import { dummyEvents } from "../../data/dummyEvents";
+import { useState, useEffect } from 'react';
 
 export default function ShowEventPage() {
   const params = useParams();
   const eventId = parseInt(params.id);
-  const event = dummyEvents.find(e => e.id === eventId);
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchEvent() {
+      try {
+        const res = await fetch('/api/events');
+        const events = await res.json();
+        const foundEvent = events.find(e => e.id === eventId);
+        setEvent(foundEvent || null);
+      } catch (error) {
+        console.error('Error fetching event:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchEvent();
+  }, [eventId]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <p className="mt-4 text-gray-600">Loading event...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -20,15 +49,17 @@ export default function ShowEventPage() {
     );
   }
 
+  // Count participants for this event
+  const participantCount = event.participants?.length || 0;
+  const remainingQuota = (event.kapasitas || 0) - participantCount;
+  const canRegister = remainingQuota > 0;
+
   const eventWithCount = {
     ...event,
     _count: {
-      participants: event.registered || 0,
+      participants: participantCount,
     },
   };
-
-  const remainingQuota = event.quota - (event.registered || 0);
-  const canRegister = remainingQuota > 0 && event.status === "PUBLISHED";
 
   return (
     <Show
@@ -36,6 +67,7 @@ export default function ShowEventPage() {
       event={eventWithCount}
       remainingQuota={remainingQuota}
       canRegister={canRegister}
+      eventId={eventId}
     />
   );
 }

@@ -4,12 +4,20 @@ import { prisma } from "../../../lib/prisma";
    GET → ambil semua peserta
 ======================= */
 export async function GET() {
-  const data = await prisma.participant.findMany({
-    include: { event: true },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const data = await prisma.participant.findMany({
+      include: { event: true },
+      orderBy: { createdAt: "desc" },
+    });
 
-  return Response.json(data);
+    return Response.json(data);
+  } catch (error) {
+    console.error('Error fetching participants:', error.message);
+    return Response.json(
+      { error: 'Failed to fetch participants', message: error.message },
+      { status: 500 }
+    );
+  }
 }
 
 /* =======================
@@ -83,17 +91,17 @@ export async function POST(req) {
         no_wa,
         jurusan,
         angkatan,
-        status,
+        status: status || "terdaftar",
         eventId,
       },
+      include: { event: true },
     });
 
-    return Response.json(participant);
+    return Response.json(participant, { status: 201 });
   } catch (err) {
-    console.log(err);
-
+    console.error('Error creating participant:', err);
     return Response.json(
-      { message: "Terjadi kesalahan server" },
+      { message: "Terjadi kesalahan server", error: err.message },
       { status: 500 }
     );
   }

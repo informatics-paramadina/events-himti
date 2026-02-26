@@ -1,23 +1,49 @@
 import { prisma } from "../../../lib/prisma";
 
 export async function GET() {
-  const events = await prisma.event.findMany();
-  return Response.json(events);
+  try {
+    const events = await prisma.event.findMany({
+      include: {
+        participants: true,
+      },
+      orderBy: {
+        tanggal: 'asc',
+      },
+    });
+    return Response.json(events);
+  } catch (error) {
+    console.error('Error fetching events:', error.message);
+    return Response.json(
+      { error: 'Failed to fetch events', message: error.message },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
 
-  const event = await prisma.event.create({
-    data: {
-      nama_event: body.nama_event,
-      deskripsi: body.deskripsi,
-      tanggal: new Date(body.tanggal),
-      jam: body.jam,
-      lokasi: body.lokasi,
-      kapasitas: body.kapasitas,
-    },
-  });
+    const event = await prisma.event.create({
+      data: {
+        nama_event: body.nama_event,
+        deskripsi: body.deskripsi,
+        tanggal: new Date(body.tanggal),
+        jam: body.jam,
+        lokasi: body.lokasi,
+        kapasitas: body.kapasitas,
+      },
+      include: {
+        participants: true,
+      },
+    });
 
-  return Response.json(event);
+    return Response.json(event, { status: 201 });
+  } catch (error) {
+    console.error('Error creating event:', error.message);
+    return Response.json(
+      { error: 'Failed to create event', message: error.message },
+      { status: 500 }
+    );
+  }
 }
