@@ -17,6 +17,7 @@ export default function ParticipantsPage() {
     const [eventFilter, setEventFilter] = useState('all');
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]);
+    const [updatingId, setUpdatingId] = useState(null);
 
     useEffect(() => {
         fetchData();
@@ -87,6 +88,68 @@ export default function ParticipantsPage() {
         }
 
         setFilteredParticipants(filtered);
+    }
+
+    async function updateParticipantStatus(participantId, newStatus) {
+        try {
+            setUpdatingId(participantId);
+            const response = await fetch(`/api/participants/${participantId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Gagal mengupdate status');
+            }
+
+            // Update both lists
+            const updatedParticipant = await response.json();
+            setParticipants(prev => prev.map(p => 
+                p.id === participantId ? updatedParticipant : p
+            ));
+            setFilteredParticipants(prev => prev.map(p => 
+                p.id === participantId ? updatedParticipant : p
+            ));
+        } catch (error) {
+            console.error('Error updating participant:', error);
+            alert('Gagal mengupdate status peserta: ' + error.message);
+        } finally {
+            setUpdatingId(null);
+        }
+    }
+
+    async function deleteParticipant(participantId) {
+        if (!confirm('Apakah Anda yakin ingin menghapus peserta ini?')) {
+            return;
+        }
+
+        try {
+            setUpdatingId(participantId);
+            const response = await fetch(`/api/participants/${participantId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Gagal menghapus peserta');
+            }
+
+            // Remove from both lists
+            setParticipants(prev => prev.filter(p => p.id !== participantId));
+            setFilteredParticipants(prev => prev.filter(p => p.id !== participantId));
+        } catch (error) {
+            console.error('Error deleting participant:', error);
+            alert('Gagal menghapus peserta: ' + error.message);
+        } finally {
+            setUpdatingId(null);
+        }
     }
 
     const getStatusColor = (status) => {
@@ -255,12 +318,15 @@ export default function ParticipantsPage() {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Kontak
                                     </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Aksi
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredParticipants.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="px-6 py-12 text-center">
+                                        <td colSpan="7" className="px-6 py-12 text-center">
                                             <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
                                             <p className="mt-2 text-sm text-gray-500">Tidak ada peserta ditemukan</p>
                                         </td>
@@ -300,6 +366,36 @@ export default function ParticipantsPage() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {participant.no_wa}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                                {participant.status !== 'hadir' && (
+                                                    <button
+                                                        onClick={() => updateParticipantStatus(participant.id, 'hadir')}
+                                                        disabled={updatingId === participant.id}
+                                                        className="px-3 py-1 bg-green-500 text-white text-xs font-medium rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                                        title="Tandai hadir"
+                                                    >
+                                                        {updatingId === participant.id ? 'Loading...' : '✓ Hadir'}
+                                                    </button>
+                                                )}
+                                                {participant.status !== 'tidak_hadir' && (
+                                                    <button
+                                                        onClick={() => updateParticipantStatus(participant.id, 'tidak_hadir')}
+                                                        disabled={updatingId === participant.id}
+                                                        className="px-3 py-1 bg-orange-500 text-white text-xs font-medium rounded hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                                        title="Tandai tidak hadir"
+                                                    >
+                                                        {updatingId === participant.id ? 'Loading...' : '✗ Tidak Hadir'}
+                                                    </button>
+                                                )}
+                                                <button
+                                                    onClick={() => deleteParticipant(participant.id)}
+                                                    disabled={updatingId === participant.id}
+                                                    className="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                                    title="Hapus peserta"
+                                                >
+                                                    {updatingId === participant.id ? 'Loading...' : '🗑 Hapus'}
+                                                </button>
                                             </td>
                                         </tr>
                                     ))

@@ -2,30 +2,73 @@
 
 import { useState } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 
 export default function CreateEventPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    date: "",
-    time: "",
-    location: "",
-    quota: 50,
+    nama_event: "",
+    deskripsi: "",
+    tanggal: "",
+    jam: "",
+    lokasi: "",
+    kapasitas: 50,
     status: "DRAFT",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setError("");
     setFormData(prev => ({
       ...prev,
-      [name]: name === "quota" ? parseInt(value) : value,
+      [name]: name === "kapasitas" ? (value === "" ? "" : parseInt(value, 10) || 0) : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New event:", formData);
-    // In a real app, this would send to backend
+    setError("");
+    setLoading(true);
+
+    try {
+      // Validasi form
+      if (!formData.nama_event || !formData.deskripsi || !formData.tanggal || !formData.jam || !formData.lokasi || !formData.kapasitas) {
+        setError("Semua field harus diisi");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nama_event: formData.nama_event,
+          deskripsi: formData.deskripsi,
+          tanggal: formData.tanggal,
+          jam: formData.jam,
+          lokasi: formData.lokasi,
+          kapasitas: parseInt(formData.kapasitas, 10),
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Gagal membuat event");
+      }
+
+      const newEvent = await response.json();
+      alert("Event berhasil dibuat!");
+      router.push("/events");
+    } catch (err) {
+      console.error("Error creating event:", err);
+      setError(err.message || "Terjadi kesalahan saat membuat event");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,13 +84,19 @@ export default function CreateEventPage() {
         <div className="bg-white rounded-lg shadow-lg p-8 border-4 border-black" style={{ boxShadow: '8px 8px 0 #000' }}>
           <h1 className="text-3xl font-bold mb-6 font-fredoka">Buat Event Baru</h1>
 
+          {error && (
+            <div className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-lg text-red-700 font-semibold">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Judul Event</label>
               <input
                 type="text"
-                name="title"
-                value={formData.title}
+                name="nama_event"
+                value={formData.nama_event}
                 onChange={handleChange}
                 placeholder="Masukkan judul event"
                 className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -58,8 +107,8 @@ export default function CreateEventPage() {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
               <textarea
-                name="description"
-                value={formData.description}
+                name="deskripsi"
+                value={formData.deskripsi}
                 onChange={handleChange}
                 placeholder="Jelaskan tentang event Anda"
                 rows="4"
@@ -73,8 +122,8 @@ export default function CreateEventPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
                 <input
                   type="date"
-                  name="date"
-                  value={formData.date}
+                  name="tanggal"
+                  value={formData.tanggal}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
@@ -84,8 +133,8 @@ export default function CreateEventPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Waktu</label>
                 <input
                   type="time"
-                  name="time"
-                  value={formData.time}
+                  name="jam"
+                  value={formData.jam}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
@@ -97,8 +146,8 @@ export default function CreateEventPage() {
               <label className="block text-sm font-semibold text-gray-700 mb-2">Lokasi</label>
               <input
                 type="text"
-                name="location"
-                value={formData.location}
+                name="lokasi"
+                value={formData.lokasi}
                 onChange={handleChange}
                 placeholder="Tempat diadakan event"
                 className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -111,8 +160,8 @@ export default function CreateEventPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Kuota Peserta</label>
                 <input
                   type="number"
-                  name="quota"
-                  value={formData.quota}
+                  name="kapasitas"
+                  value={formData.kapasitas}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
@@ -134,10 +183,11 @@ export default function CreateEventPage() {
 
             <button
               type="submit"
-              className="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg border-2 border-black hover:bg-indigo-700 transition-colors"
+              disabled={loading}
+              className="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg border-2 border-black hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               style={{ boxShadow: '4px 4px 0 #000' }}
             >
-              Buat Event
+              {loading ? "Membuat Event..." : "Buat Event"}
             </button>
           </form>
         </div>

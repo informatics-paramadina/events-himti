@@ -24,6 +24,7 @@ export default function Dashboard() {
     const [events, setEvents] = useState([]);
     const [recentParticipants, setRecentParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [updatingId, setUpdatingId] = useState(null);
 
     useEffect(() => {
         fetchDashboardData();
@@ -104,6 +105,34 @@ export default function Dashboard() {
             setEvents([]);
             setRecentParticipants([]);
             setLoading(false);
+        }
+    }
+
+    async function updateParticipantStatus(participantId, newStatus) {
+        try {
+            setUpdatingId(participantId);
+            const response = await fetch(`/api/participants/${participantId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Gagal mengupdate status');
+            }
+
+            // Update UI
+            setRecentParticipants(prev => prev.map(p => 
+                p.id === participantId ? { ...p, status: newStatus } : p
+            ));
+        } catch (error) {
+            console.error('Error updating participant:', error);
+            alert('Gagal mengupdate status peserta: ' + error.message);
+        } finally {
+            setUpdatingId(null);
         }
     }
 
@@ -352,13 +381,13 @@ export default function Dashboard() {
                                 ) : (
                                     recentParticipants.map((participant) => (
                                         <div key={participant.id} className="p-4 hover:bg-gray-50 transition">
-                                            <div className="flex items-start">
+                                            <div className="flex items-start justify-between">
                                                 <div className="flex-shrink-0">
                                                     <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white font-semibold">
                                                         {participant.nama.charAt(0).toUpperCase()}
                                                     </div>
                                                 </div>
-                                                <div className="ml-3 flex-1 min-w-0">
+                                                <div className="flex-1 min-w-0 mx-3">
                                                     <p className="text-sm font-medium text-gray-900 truncate">
                                                         {participant.nama}
                                                     </p>
@@ -375,15 +404,27 @@ export default function Dashboard() {
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${
-                                                    participant.status === 'ATTENDED' || participant.status === 'hadir'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : participant.status === 'REGISTERED' || participant.status === 'terdaftar'
-                                                        ? 'bg-blue-100 text-blue-800'
-                                                        : 'bg-gray-100 text-gray-800'
-                                                }`}>
-                                                    {participant.status}
-                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <span className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
+                                                        participant.status === 'ATTENDED' || participant.status === 'hadir'
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : participant.status === 'REGISTERED' || participant.status === 'terdaftar'
+                                                            ? 'bg-blue-100 text-blue-800'
+                                                            : 'bg-gray-100 text-gray-800'
+                                                    }`}>
+                                                        {participant.status}
+                                                    </span>
+                                                    {participant.status !== 'hadir' && (
+                                                        <button
+                                                            onClick={() => updateParticipantStatus(participant.id, 'hadir')}
+                                                            disabled={updatingId === participant.id}
+                                                            className="ml-2 px-2 py-1 text-xs font-medium rounded bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                                            title="Tandai hadir"
+                                                        >
+                                                            {updatingId === participant.id ? '...' : '✓'}
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     ))
