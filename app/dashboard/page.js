@@ -25,6 +25,10 @@ export default function Dashboard() {
     const [recentParticipants, setRecentParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updatingId, setUpdatingId] = useState(null);
+    const [editingEvent, setEditingEvent] = useState(null);
+    const [editFormData, setEditFormData] = useState({});
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [deletingId, setDeletingId] = useState(null);
 
     useEffect(() => {
         fetchDashboardData();
@@ -133,6 +137,85 @@ export default function Dashboard() {
             alert('Gagal mengupdate status peserta: ' + error.message);
         } finally {
             setUpdatingId(null);
+        }
+    }
+
+    function openEditModal(event) {
+        setEditingEvent(event);
+        setEditFormData({
+            nama_event: event.nama_event,
+            deskripsi: event.deskripsi || '',
+            tanggal: event.tanggal ? new Date(event.tanggal).toISOString().split('T')[0] : '',
+            jam: event.jam,
+            lokasi: event.lokasi,
+            kapasitas: event.kapasitas || '',
+        });
+        setShowEditModal(true);
+    }
+
+    function closeEditModal() {
+        setEditingEvent(null);
+        setEditFormData({});
+        setShowEditModal(false);
+    }
+
+    async function handleEditEvent(e) {
+        e.preventDefault();
+        if (!editingEvent) return;
+
+        try {
+            const response = await fetch(`/api/events/${editingEvent.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editFormData),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Gagal mengupdate event');
+            }
+
+            const updatedEvent = await response.json();
+
+            // Update events list
+            setEvents(prev => prev.map(e => 
+                e.id === editingEvent.id ? { ...updatedEvent, participantCount: e.participantCount } : e
+            ));
+
+            closeEditModal();
+            alert('Event berhasil diupdate!');
+        } catch (error) {
+            console.error('Error updating event:', error);
+            alert('Gagal mengupdate event: ' + error.message);
+        }
+    }
+
+    async function handleDeleteEvent(eventId) {
+        if (!confirm('Apakah Anda yakin ingin menghapus event ini?')) {
+            return;
+        }
+
+        try {
+            setDeletingId(eventId);
+            const response = await fetch(`/api/events/${eventId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Gagal menghapus event');
+            }
+
+            // Update events list
+            setEvents(prev => prev.filter(e => e.id !== eventId));
+            alert('Event berhasil dihapus!');
+        } catch (error) {
+            console.error('Error deleting event:', error);
+            alert('Gagal menghapus event: ' + error.message);
+        } finally {
+            setDeletingId(null);
         }
     }
 
@@ -345,6 +428,23 @@ export default function Dashboard() {
                                                                 </div>
                                                             </div>
                                                         )}
+
+                                                        {/* Action Buttons */}
+                                                        <div className="mt-4 flex gap-2">
+                                                            <button
+                                                                onClick={() => openEditModal(event)}
+                                                                className="px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
+                                                            >
+                                                                ✏️ Edit
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteEvent(event.id)}
+                                                                disabled={deletingId === event.id}
+                                                                className="px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                                            >
+                                                                {deletingId === event.id ? '...' : '🗑️ Hapus'}
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -459,6 +559,121 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* Edit Event Modal */}
+            {showEditModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+                    <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-900">Edit Event</h3>
+                            <button
+                                onClick={closeEditModal}
+                                className="text-gray-400 hover:text-gray-600 transition"
+                            >
+                                <span className="text-2xl">×</span>
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <form onSubmit={handleEditEvent} className="p-6 space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Nama Event
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={editFormData.nama_event || ''}
+                                    onChange={(e) => setEditFormData({ ...editFormData, nama_event: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Deskripsi
+                                </label>
+                                <textarea
+                                    value={editFormData.deskripsi || ''}
+                                    onChange={(e) => setEditFormData({ ...editFormData, deskripsi: e.target.value })}
+                                    rows="3"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Tanggal
+                                    </label>
+                                    <input
+                                        type="date"
+                                        required
+                                        value={editFormData.tanggal || ''}
+                                        onChange={(e) => setEditFormData({ ...editFormData, tanggal: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Jam
+                                    </label>
+                                    <input
+                                        type="time"
+                                        required
+                                        value={editFormData.jam || ''}
+                                        onChange={(e) => setEditFormData({ ...editFormData, jam: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Lokasi
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={editFormData.lokasi || ''}
+                                    onChange={(e) => setEditFormData({ ...editFormData, lokasi: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Kapasitas
+                                </label>
+                                <input
+                                    type="number"
+                                    value={editFormData.kapasitas || ''}
+                                    onChange={(e) => setEditFormData({ ...editFormData, kapasitas: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </div>
+
+                            {/* Modal Footer */}
+                            <div className="flex gap-3 pt-4 border-t border-gray-200">
+                                <button
+                                    type="button"
+                                    onClick={closeEditModal}
+                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition"
+                                >
+                                    Simpan Perubahan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
