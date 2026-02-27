@@ -30,7 +30,8 @@ model Event {
   nama_event  String
   deskripsi   String?
   tanggal     DateTime
-  jam         String
+  jam_mulai   String
+  jam_berakhir String
   lokasi      String
   kapasitas   Int?
 

@@ -32,7 +32,8 @@ const FORM_FIELDS = [
   { key: "nama_event", label: "Judul Event", placeholder: "Workshop Web Development", type: "text", icon: BoltIcon, required: true, fullWidth: true },
   { key: "deskripsi", label: "Deskripsi", placeholder: "Jelaskan tentang event yang akan diselenggarakan...", type: "textarea", icon: null, required: true, fullWidth: true },
   { key: "tanggal", label: "Tanggal", placeholder: "", type: "date", icon: CalendarIcon, required: true },
-  { key: "jam", label: "Waktu", placeholder: "", type: "time", icon: ClockIcon, required: true },
+  { key: "jam_mulai", label: "Jam Mulai", placeholder: "", type: "time", icon: ClockIcon, required: true },
+  { key: "jam_berakhir", label: "Jam Berakhir", placeholder: "", type: "time", icon: ClockIcon, required: true, fullWidth: true },
   { key: "lokasi", label: "Lokasi", placeholder: "Auditorium Kampus", type: "text", icon: MapPinIcon, required: true, fullWidth: true },
   { key: "kapasitas", label: "Kuota Peserta", placeholder: "50", type: "number", icon: UsersIcon, required: true },
   { key: "status", label: "Status", placeholder: "", type: "select", icon: null, required: false, options: [{ value: "DRAFT", label: "📝 Draft" }, { value: "PUBLISHED", label: "🚀 Published" }] },
@@ -44,7 +45,8 @@ export default function CreateEventPage() {
     nama_event: "",
     deskripsi: "",
     tanggal: "",
-    jam: "",
+    jam_mulai: "",
+    jam_berakhir: "",
     lokasi: "",
     kapasitas: 50,
     status: "DRAFT",
@@ -67,7 +69,7 @@ export default function CreateEventPage() {
     setLoading(true);
 
     try {
-      if (!formData.nama_event || !formData.deskripsi || !formData.tanggal || !formData.jam || !formData.lokasi || !formData.kapasitas) {
+      if (!formData.nama_event || !formData.deskripsi || !formData.tanggal || !formData.jam_mulai || !formData.jam_berakhir || !formData.lokasi || !formData.kapasitas) {
         setError("Semua field harus diisi!");
         setLoading(false);
         return;
@@ -80,7 +82,8 @@ export default function CreateEventPage() {
           nama_event: formData.nama_event,
           deskripsi: formData.deskripsi,
           tanggal: formData.tanggal,
-          jam: formData.jam,
+          jam_mulai: formData.jam_mulai,
+          jam_berakhir: formData.jam_berakhir,
           lokasi: formData.lokasi,
           kapasitas: parseInt(formData.kapasitas, 10),
         }),
@@ -101,8 +104,8 @@ export default function CreateEventPage() {
     }
   };
 
-  const completedFields = [formData.nama_event, formData.deskripsi, formData.tanggal, formData.jam, formData.lokasi, formData.kapasitas].filter(Boolean).length;
-  const pct = Math.round((completedFields / 6) * 100);
+  const completedFields = [formData.nama_event, formData.deskripsi, formData.tanggal, formData.jam_mulai, formData.jam_berakhir, formData.lokasi, formData.kapasitas].filter(Boolean).length;
+  const pct = Math.round((completedFields / 7) * 100);
 
   return (
     <div className="min-h-screen" style={{ background: "#FEFEFE" }}>
@@ -153,7 +156,7 @@ export default function CreateEventPage() {
             </div>
             <span className="text-white font-black text-xs tabular-nums"
               style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.15)" }}>
-              {completedFields}/6
+              {completedFields}/7
             </span>
           </div>
         </div>

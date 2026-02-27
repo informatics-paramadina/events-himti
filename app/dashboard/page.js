@@ -146,7 +146,8 @@ export default function Dashboard() {
             nama_event: event.nama_event,
             deskripsi: event.deskripsi || '',
             tanggal: event.tanggal ? new Date(event.tanggal).toISOString().split('T')[0] : '',
-            jam: event.jam,
+            jam_mulai: event.jam_mulai,
+            jam_berakhir: event.jam_berakhir,
             lokasi: event.lokasi,
             kapasitas: event.kapasitas || '',
         });
@@ -397,7 +398,7 @@ export default function Dashboard() {
                                                             </div>
                                                             <div className="flex items-center">
                                                                 <ClockIcon className="h-4 w-4 mr-1.5" />
-                                                                {event.jam}
+                                                                {event.jam_mulai} - {event.jam_berakhir}
                                                             </div>
                                                             <div className="flex items-center">
                                                                 <MapPinIcon className="h-4 w-4 mr-1.5" />
@@ -617,16 +618,29 @@ export default function Dashboard() {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Jam
+                                        Jam Mulai
                                     </label>
                                     <input
                                         type="time"
                                         required
-                                        value={editFormData.jam || ''}
-                                        onChange={(e) => setEditFormData({ ...editFormData, jam: e.target.value })}
+                                        value={editFormData.jam_mulai || ''}
+                                        onChange={(e) => setEditFormData({ ...editFormData, jam_mulai: e.target.value })}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                                     />
                                 </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Jam Berakhir
+                                </label>
+                                <input
+                                    type="time"
+                                    required
+                                    value={editFormData.jam_berakhir || ''}
+                                    onChange={(e) => setEditFormData({ ...editFormData, jam_berakhir: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
                             </div>
 
                             <div>

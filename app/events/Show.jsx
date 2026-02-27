@@ -168,6 +168,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                     <div className="grid grid-cols-2 gap-2">
                         {[
                             { label: 'Tanggal', val: eventDate.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }) },
+                            { label: 'Waktu',  val: `${event.jam_mulai}-${event.jam_berakhir}` },
                             { label: 'Lokasi',  val: event.lokasi, trunc: true },
                         ].map(({ label, val, trunc }) => (
                             <div key={label} className="p-3 bg-slate-50 b-border rounded-xl">
@@ -266,7 +267,8 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                 <div className="p-4 space-y-3">
                     {/* meta */}
                     {[
-                        { Icon: CalendarIcon, label: 'Waktu',  val: eventDate.toLocaleString('id-ID', { dateStyle:'medium', timeStyle:'short' }) },
+                        { Icon: CalendarIcon, label: 'Tanggal',  val: eventDate.toLocaleDateString('id-ID', { dateStyle:'long' }) },
+                        { Icon: ClockIcon, label: 'Waktu',  val: `${event.jam_mulai} - ${event.jam_berakhir}` },
                         { Icon: MapPinIcon,   label: 'Lokasi', val: event.lokasi, trunc: true },
                     ].map(({ Icon, label, val, trunc }) => (
                         <div key={label} className="flex items-center gap-3 p-3 b-border rounded-2xl bg-white">
@@ -413,7 +415,8 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                             </div>
                             <div className="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {[
-                                    { icon: '', label: 'Tanggal & Waktu', val: eventDate.toLocaleString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }) },
+                                    { icon: '', label: 'Tanggal', val: eventDate.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) },
+                                    { icon: '', label: 'Waktu', val: `${event.jam_mulai} - ${event.jam_berakhir} WIB` },
                                     { icon: '', label: 'Lokasi',          val: event.lokasi },
                                     { icon: '', label: 'Daftar Ulang',    val: `${filled} dari ${event.kapasitas} telah mendaftar` },
                                     { icon: '', label: 'Status Waktu',    val: isUpcoming ? 'Segera Dimulai' : 'Sudah Berlangsung' },
