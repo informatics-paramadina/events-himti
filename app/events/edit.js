@@ -55,7 +55,7 @@ export default function EditEvent({ auth, event }) {
                                     type="text"
                                     value={data.title}
                                     onChange={e => setData('title', e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                     placeholder="e.g., Tech Workshop 2024"
                                 />
                                 {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
@@ -71,7 +71,7 @@ export default function EditEvent({ auth, event }) {
                                     value={data.description}
                                     onChange={e => setData('description', e.target.value)}
                                     rows="4"
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                     placeholder="Describe your event..."
                                 />
                                 {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
@@ -88,7 +88,7 @@ export default function EditEvent({ auth, event }) {
                                         type="datetime-local"
                                         value={data.date}
                                         onChange={e => setData('date', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                     />
                                     {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date}</p>}
                                 </div>
@@ -102,7 +102,7 @@ export default function EditEvent({ auth, event }) {
                                         type="text"
                                         value={data.location}
                                         onChange={e => setData('location', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                         placeholder="e.g., Auditorium or Zoom Link"
                                     />
                                     {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
@@ -121,7 +121,7 @@ export default function EditEvent({ auth, event }) {
                                         min="1"
                                         value={data.quota}
                                         onChange={e => setData('quota', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                         placeholder="e.g., 100"
                                     />
                                     {errors.quota && <p className="mt-1 text-sm text-red-600">{errors.quota}</p>}
@@ -135,7 +135,7 @@ export default function EditEvent({ auth, event }) {
                                         id="status"
                                         value={data.status}
                                         onChange={e => setData('status', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                     >
                                         <option value="DRAFT">Draft</option>
                                         <option value="PUBLISHED">Published</option>
@@ -155,7 +155,7 @@ export default function EditEvent({ auth, event }) {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleImageChange}
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                 />
                                 <p className="mt-1 text-sm text-gray-500">
                                     Leave empty to keep current poster
@@ -181,7 +181,7 @@ export default function EditEvent({ auth, event }) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+                                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50"
                                 >
                                     {processing ? 'Updating...' : 'Update Event'}
                                 </button>

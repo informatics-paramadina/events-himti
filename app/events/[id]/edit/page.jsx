@@ -36,7 +36,7 @@ export default function EditEventPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
-          <a href="/events" className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold">
+          <a href="/events" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold">
             <ArrowLeftIcon className="w-4 h-4" strokeWidth={2.5} />
             Kembali ke Events
           </a>
@@ -53,7 +53,7 @@ export default function EditEventPage() {
                 name="title"
                 value={formData.title || ''}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -64,7 +64,7 @@ export default function EditEventPage() {
                 value={formData.description || ''}
                 onChange={handleChange}
                 rows="4"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -76,7 +76,7 @@ export default function EditEventPage() {
                   name="date"
                   value={formData.date || ''}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
               <div>
@@ -86,7 +86,7 @@ export default function EditEventPage() {
                   name="time"
                   value={formData.time || ''}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
             </div>
@@ -98,7 +98,7 @@ export default function EditEventPage() {
                 name="location"
                 value={formData.location || ''}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -110,7 +110,7 @@ export default function EditEventPage() {
                   name="quota"
                   value={formData.quota || ''}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
               <div>
@@ -119,7 +119,7 @@ export default function EditEventPage() {
                   name="status"
                   value={formData.status || 'DRAFT'}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
@@ -130,7 +130,7 @@ export default function EditEventPage() {
 
             <button
               type="submit"
-              className="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg border-2 border-black hover:bg-indigo-700 transition-colors"
+              className="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg border-2 border-black hover:bg-green-700 transition-colors"
               style={{ boxShadow: '4px 4px 0 #000' }}
             >
               Simpan Perubahan

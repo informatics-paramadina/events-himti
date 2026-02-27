@@ -140,7 +140,7 @@ export default function Dashboard() {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
                     <p className="mt-4 text-gray-600">Loading dashboard...</p>
                 </div>
             </div>
@@ -175,7 +175,7 @@ export default function Dashboard() {
                             </Link>
                             <Link
                                 href="/events/create"
-                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition"
+                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition"
                             >
                                 <PlusIcon className="h-5 w-5 mr-2" />
                                 Buat Event Baru
@@ -195,8 +195,8 @@ export default function Dashboard() {
                                 <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalEvents}</p>
                                 <p className="text-xs text-gray-500 mt-1">Semua event</p>
                             </div>
-                            <div className="p-3 bg-blue-100 rounded-lg">
-                                <CalendarIcon className="h-8 w-8 text-blue-600" />
+                            <div className="p-3 bg-green-100 rounded-lg">
+                                <CalendarIcon className="h-8 w-8 text-green-600" />
                             </div>
                         </div>
                     </div>
@@ -253,7 +253,7 @@ export default function Dashboard() {
                                 </div>
                                 <Link
                                     href="/events"
-                                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                    className="text-sm text-green-600 hover:text-green-700 font-medium"
                                 >
                                     Lihat Semua →
                                 </Link>
@@ -265,7 +265,7 @@ export default function Dashboard() {
                                         <p className="mt-2 text-sm text-gray-500">Belum ada event</p>
                                         <Link
                                             href="/events/create"
-                                            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                                            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700"
                                         >
                                             <PlusIcon className="h-5 w-5 mr-2" />
                                             Buat Event Pertama
@@ -286,7 +286,7 @@ export default function Dashboard() {
                                                         <div className="flex items-center">
                                                             <Link 
                                                                 href={`/events/${event.id}`}
-                                                                className="text-lg font-semibold text-gray-900 hover:text-blue-600"
+                                                                className="text-lg font-semibold text-gray-900 hover:text-green-600"
                                                             >
                                                                 {event.nama_event}
                                                             </Link>
@@ -366,7 +366,7 @@ export default function Dashboard() {
                                     </div>
                                     <Link
                                         href="/participants"
-                                        className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                        className="text-sm text-green-600 hover:text-green-700 font-medium"
                                     >
                                         Lihat Semua →
                                     </Link>
@@ -383,7 +383,7 @@ export default function Dashboard() {
                                         <div key={participant.id} className="p-4 hover:bg-gray-50 transition">
                                             <div className="flex items-start justify-between">
                                                 <div className="flex-shrink-0">
-                                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white font-semibold">
+                                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-green-400 to-green-700 flex items-center justify-center text-white font-semibold">
                                                         {participant.nama.charAt(0).toUpperCase()}
                                                     </div>
                                                 </div>
@@ -409,7 +409,7 @@ export default function Dashboard() {
                                                         participant.status === 'ATTENDED' || participant.status === 'hadir'
                                                             ? 'bg-green-100 text-green-800'
                                                             : participant.status === 'REGISTERED' || participant.status === 'terdaftar'
-                                                            ? 'bg-blue-100 text-blue-800'
+                                                            ? 'bg-green-100 text-green-800'
                                                             : 'bg-gray-100 text-gray-800'
                                                     }`}>
                                                         {participant.status}
@@ -433,7 +433,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Quick Stats */}
-                        <div className="mt-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-sm p-6 text-white">
+                        <div className="mt-6 bg-gradient-to-br from-green-500 to-green-700 rounded-xl shadow-sm p-6 text-white">
                             <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
                             <div className="space-y-3">
                                 <Link

@@ -5,7 +5,7 @@ import { MapPinIcon, UsersIcon, MagnifyingGlassIcon, PlusIcon, FunnelIcon, BoltI
 
 const CSS = `
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
-    body { background-color: #FFFDF0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: #FEFEFE; font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-fredoka { font-family: 'Fredoka', sans-serif; }
 
     .b-border    { border: 4px solid #000; }
@@ -55,11 +55,11 @@ const CSS = `
 `;
 
 const CARD_ACCENT = [
-    { btn: '#5865F2', bar: '#f97316', cover: 'from-violet-400 to-indigo-600' },
-    { btn: '#111827', bar: '#f87171', cover: 'from-rose-400 to-pink-600'    },
-    { btn: '#059669', bar: '#4ade80', cover: 'from-emerald-400 to-teal-600' },
-    { btn: '#2563eb', bar: '#60a5fa', cover: 'from-blue-400 to-cyan-600'    },
-    { btn: '#7c3aed', bar: '#c084fc', cover: 'from-purple-400 to-violet-600'},
+    { btn: '#2AAF15', bar: '#33CC00', cover: 'from-green-400 to-green-700' },
+    { btn: '#003300', bar: '#2AAF15', cover: 'from-emerald-400 to-green-800' },
+    { btn: '#33CC00', bar: '#2AAF15', cover: 'from-lime-400 to-green-600'   },
+    { btn: '#2AAF15', bar: '#33CC00', cover: 'from-green-500 to-emerald-700' },
+    { btn: '#003300', bar: '#33CC00', cover: 'from-teal-400 to-green-800'   },
 ];
 
 const STATUS_CFG = {
@@ -104,7 +104,7 @@ function HeroCarousel({ events }) {
 
             <div className="flex items-end justify-between mb-8 sm:mb-12">
                 <h3 className="font-fredoka text-[1.75rem] sm:text-[2rem] font-bold leading-none text-slate-900">
-                    Mendatang<span style={{ color: '#5865F2' }}>.</span>
+                    Mendatang<span style={{ color: '#2AAF15' }}>.</span>
                 </h3>
                 {total > 1 && (
                     <div className="flex gap-2 sm:gap-3">
@@ -121,7 +121,7 @@ function HeroCarousel({ events }) {
             </div>
 
             <div className="relative card-3d-scene hero-card-wrap">
-                <div className="card-layer-yellow absolute inset-0 bg-yellow-400 b-border rounded-[2rem] sm:rounded-[2.5rem]"
+                <div className="card-layer-yellow absolute inset-0 bg-green-500 b-border rounded-[2rem] sm:rounded-[2.5rem]"
                     style={{ transform: 'translateX(16px) translateY(16px) rotate(3deg)' }} />
                 <div className="absolute inset-0 bg-black b-border rounded-[2rem] sm:rounded-[2.5rem]"
                     style={{ transform: 'translateX(8px) translateY(8px)' }} />
@@ -131,7 +131,7 @@ function HeroCarousel({ events }) {
                         {item.poster
                             ? <img src={`/storage/${item.poster}`} alt={item.title}
                                 className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
-                            : <div className={`w-full h-full bg-gradient-to-br from-indigo-400 to-blue-600 flex items-end pb-5 pl-6`}>
+                            : <div className={`w-full h-full bg-gradient-to-br from-green-400 to-green-700 flex items-end pb-5 pl-6`}>
                                 <span className="font-bold leading-none select-none font-fredoka text-white/20"
                                     style={{ fontSize: '7.5rem' }}>
                                     {item.title.charAt(0)}
@@ -166,7 +166,7 @@ function HeroCarousel({ events }) {
 
                         <Link href={`/events/${item.id}`}
                             className="b-btn block w-full text-center text-white py-3 sm:py-4 rounded-xl sm:rounded-[1.5rem] b-border font-black text-xs sm:text-sm uppercase tracking-[0.15em]"
-                            style={{ background: '#5865F2', boxShadow: '4px 4px 0 #000' }}>
+                            style={{ background: '#2AAF15', boxShadow: '4px 4px 0 #000' }}>
                             AMBIL TIKET SEKARANG
                         </Link>
                     </div>
@@ -182,7 +182,7 @@ function HeroCarousel({ events }) {
                         <div className="h-full rounded-full"
                             style={{
                                 width: `${((cur + 1) / total) * 100}%`,
-                                background: '#5865F2',
+                                background: '#2AAF15',
                                 borderRight: '3px solid #000',
                                 transition: 'width 0.55s cubic-bezier(.22,1,.36,1)',
                             }} />
@@ -245,7 +245,7 @@ function EventCard({ event, idx, showAdminActions = false }) {
             </div>
 
             <div className="flex flex-col flex-1 gap-4 p-5 sm:gap-5 sm:p-7">
-                <h3 className="font-fredoka text-[1.4rem] sm:text-[1.6rem] font-bold leading-snug text-slate-900 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                <h3 className="font-fredoka text-[1.4rem] sm:text-[1.6rem] font-bold leading-snug text-slate-900 line-clamp-2 group-hover:text-green-600 transition-colors">
                     {event.title}
                 </h3>
 
@@ -338,18 +338,18 @@ export default function EventsIndex({ auth, events, filters }) {
         <>
             <Head title="Campus Events" />
             <style>{CSS}</style>
-            <div className="min-h-screen overflow-x-hidden" style={{ background: '#FFFDF0' }}>
+            <div className="min-h-screen overflow-x-hidden" style={{ background: '#FEFEFE' }}>
                 <div className="fixed inset-0 bg-dots" />
 
                 <header className="sticky top-0 z-50 px-4 pt-4 pb-3 sm:px-6">
                     <nav className="flex items-center justify-between px-4 mx-auto bg-white sm:px-5 max-w-7xl b-border rounded-2xl sm:px-7"
                         style={{ height: '60px', boxShadow: '6px 6px 0 #000' }}>
                         <Link href="/events" className="flex items-center gap-2.5">
-                            <div className="flex items-center justify-center w-8 h-8 bg-yellow-400 sm:w-10 sm:h-10 b-border rounded-xl b-btn"
+                            <div className="flex items-center justify-center w-8 h-8 bg-green-500 sm:w-10 sm:h-10 b-border rounded-xl b-btn"
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />
                             </div>
-                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight text-black">EventHub.</span>
+                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight text-black">HIMTI Events</span>
                         </Link>
                     </nav>
                 </header>
@@ -364,11 +364,11 @@ export default function EventsIndex({ auth, events, filters }) {
 
                         <div className="grid grid-cols-1 gap-0 lg:grid-cols-12" style={{ minHeight: 'auto' }}>
                         <div className="relative flex flex-col justify-center p-6 text-white border-b-4 border-black sm:p-8 lg:p-10 lg:col-span-7 lg:border-b-0 lg:border-r-4"
-                            style={{ background: '#5865F2' }}>
+                            style={{ background: '#2AAF15' }}>
 
-                            <div className="absolute hidden bg-yellow-400 c-float top-12 right-12 lg:right-24 w-18 h-18 b-border rounded-2xl sm:flex"
+                            <div className="absolute hidden bg-green-500 c-float top-12 right-12 lg:right-24 w-18 h-18 b-border rounded-2xl sm:flex"
                                 style={{ width: '72px', height: '72px', boxShadow: '6px 6px 0 #000' }}></div>
-                            <div className="absolute hidden bg-pink-400 rounded-full c-floatB bottom-16 right-12 lg:right-16 b-border sm:flex"
+                            <div className="absolute hidden bg-green-700 rounded-full c-floatB bottom-16 right-12 lg:right-16 b-border sm:flex"
                                 style={{ width: '60px', height: '60px', boxShadow: '6px 6px 0 #000', animationDelay: '2s' }}></div>
 
                             <div className="relative z-10 flex flex-col items-center w-full max-w-2xl mx-auto space-y-6 text-center lg:mx-0 lg:max-w-xl lg:items-start lg:text-left">
@@ -391,7 +391,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                         }}>
                                         Upgrade Skill
                                     </h1>
-                                    <h1 className="font-fredoka font-bold text-yellow-400 leading-[1.1]"
+                                    <h1 className="font-fredoka font-bold text-green-200 leading-[1.1]"
                                         style={{
                                             fontSize: 'clamp(2.5rem, 9vw, 4.5rem)',
                                             textShadow: '4px 4px 0 #000',
@@ -403,7 +403,7 @@ export default function EventsIndex({ auth, events, filters }) {
 
                                 <p className="w-full max-w-md text-xs font-bold leading-relaxed sm:text-sm md:text-base text-white/90">
                                     Workshop, hackathon, dan seminar terbaik daftar langsung,{' '}
-                                    <span className="font-black text-yellow-300">gratis, tanpa login.</span>
+                                    <span className="font-black text-green-200">gratis, tanpa login.</span>
                                 </p>
 
                                 <a href="#events"
@@ -472,7 +472,7 @@ export default function EventsIndex({ auth, events, filters }) {
                             <div className="flex items-center justify-center gap-3 mb-2 md:justify-start sm:mb-3">
                                 <span className="text-3xl font-bold sm:text-4xl font-fredoka text-slate-900">All Events</span>
                                 <span className="px-3 py-1 text-xs font-black text-white sm:text-sm b-border-2 rounded-xl"
-                                    style={{ background: '#5865F2', boxShadow: '3px 3px 0 #000' }}>
+                                    style={{ background: '#2AAF15', boxShadow: '3px 3px 0 #000' }}>
                                     {filteredEvents.length}
                                 </span>
                             </div>
@@ -484,7 +484,7 @@ export default function EventsIndex({ auth, events, filters }) {
                             <MagnifyingGlassIcon className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-slate-400" strokeWidth={2.5} />
                             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                                 placeholder="Cari event atau lokasi..."
-                                className="w-full md:w-72 pl-11 pr-5 py-3 sm:py-3.5 bg-white b-border rounded-xl sm:rounded-2xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full md:w-72 pl-11 pr-5 py-3 sm:py-3.5 bg-white b-border rounded-xl sm:rounded-2xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                                 style={{ boxShadow: '4px 4px 0 #000' }} />
                         </div>
                     </div>
@@ -510,11 +510,11 @@ export default function EventsIndex({ auth, events, filters }) {
                 <footer className="py-10 mt-12 bg-white sm:mt-16 sm:py-14" style={{ borderTop: '4px solid #000' }}>
                     <div className="flex flex-col items-center gap-4 px-6 mx-auto text-center sm:gap-5 max-w-7xl">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex items-center justify-center w-8 h-8 bg-yellow-400 sm:w-10 sm:h-10 b-border rounded-xl"
+                            <div className="flex items-center justify-center w-8 h-8 bg-green-500 sm:w-10 sm:h-10 b-border rounded-xl"
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />
                             </div>
-                            <span className="text-xl font-bold tracking-tight sm:text-2xl font-fredoka text-black">EventHub.</span>
+                            <span className="text-xl font-bold tracking-tight sm:text-2xl font-fredoka text-black">HIMTI Events</span>
                         </div>
                         <p className="max-w-xs text-xs font-bold sm:text-sm text-slate-400">
                             Platform event kampus terbaik gratis, fun, dan accessible!
@@ -531,7 +531,7 @@ export default function EventsIndex({ auth, events, filters }) {
                         <div className="flex items-center gap-4 mt-2">
                             {['IG', 'TW'].map((s) => (
                                 <div key={s}
-                                    className="flex items-center justify-center w-8 h-8 text-black text-xs font-black transition-colors bg-white rounded-full cursor-pointer sm:w-9 sm:h-9 b-border-2 hover:bg-yellow-400"
+                                    className="flex items-center justify-center w-8 h-8 text-black text-xs font-black transition-colors bg-white rounded-full cursor-pointer sm:w-9 sm:h-9 b-border-2 hover:bg-green-400"
                                     style={{ boxShadow: '2px 2px 0 #000', color: "black" }}>
                                     {s}
                                 </div>
@@ -558,7 +558,7 @@ export default function EventsIndex({ auth, events, filters }) {
                     {isAdmin && (
                         <Link href="/events/create"
                             className="b-btn b-border inline-flex items-center justify-center gap-2 text-white px-5 py-2.5 rounded-2xl font-black text-sm uppercase tracking-widest w-full sm:w-auto mt-2 sm:mt-0"
-                            style={{ background: '#5865F2', boxShadow: '4px 4px 0 #000' }}>
+                            style={{ background: '#2AAF15', boxShadow: '4px 4px 0 #000' }}>
                             <PlusIcon className="w-4 h-4" strokeWidth={3} /> Buat Event
                         </Link>
                     )}
@@ -566,7 +566,7 @@ export default function EventsIndex({ auth, events, filters }) {
             }>
             <Head title="Events" />
             <style>{CSS}</style>
-            <div className="py-8 sm:py-16" style={{ background: '#FFFDF0' }}>
+            <div className="py-8 sm:py-16" style={{ background: '#FEFEFE' }}>
                 <div className="px-4 mx-auto space-y-6 sm:space-y-10 max-w-7xl sm:px-6 lg:px-8">
                     <div className="flex flex-col gap-3 p-4 bg-white b-border rounded-2xl sm:flex-row"
                         style={{ boxShadow: '5px 5px 0 #000' }}>
@@ -574,7 +574,7 @@ export default function EventsIndex({ auth, events, filters }) {
                             <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" strokeWidth={2.5} />
                             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                                 placeholder="Cari event..."
-                                className="w-full pl-10 pr-4 py-2.5 b-border rounded-xl text-sm font-bold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50" />
+                                className="w-full pl-10 pr-4 py-2.5 b-border rounded-xl text-sm font-bold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500 bg-slate-50" />
                         </div>
                         {isAdmin && (
                             <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
@@ -583,7 +583,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                     <button key={key} onClick={() => handleFilterChange(key)}
                                         className={`b-btn b-border-2 flex-1 sm:flex-none px-3 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-wider ${statusFilter === key ? 'text-white' : 'bg-white text-slate-600'}`}
                                         style={{
-                                            background: statusFilter === key ? '#5865F2' : '',
+                                            background: statusFilter === key ? '#2AAF15' : '',
                                             boxShadow: '3px 3px 0 #000',
                                         }}>
                                         {label}
@@ -616,7 +616,7 @@ export default function EventsIndex({ auth, events, filters }) {
                               {isAdmin && !search && (
                                   <Link href="/events/create"
                                       className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-black tracking-widest text-white uppercase b-btn b-border rounded-xl sm:rounded-2xl"
-                                      style={{ background: '#5865F2', boxShadow: '4px 4px 0 #000' }}>
+                                      style={{ background: '#2AAF15', boxShadow: '4px 4px 0 #000' }}>
                                       <PlusIcon className="w-4 h-4" strokeWidth={3} /> Buat Event
                                   </Link>
                               )}

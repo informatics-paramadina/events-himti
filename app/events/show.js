@@ -5,11 +5,11 @@ import { CheckBadgeIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
 const ACCENTS = [
-    { bg: '#6366f1', btn: '#6366f1', bar: '#facc15', tag: '#facc15', tagText: '#000' },
-    { bg: '#ec4899', btn: '#000000', bar: '#bfdbfe', tag: '#bfdbfe', tagText: '#000' },
-    { bg: '#f97316', btn: '#f97316', bar: '#bbf7d0', tag: '#bbf7d0', tagText: '#000' },
-    { bg: '#10b981', btn: '#000000', bar: '#fecaca', tag: '#fecaca', tagText: '#000' },
-    { bg: '#8b5cf6', btn: '#8b5cf6', bar: '#fed7aa', tag: '#fed7aa', tagText: '#000' },
+    { bg: '#2AAF15', btn: '#2AAF15', bar: '#33CC00', tag: '#33CC00', tagText: '#000' },
+    { bg: '#003300', btn: '#003300', bar: '#2AAF15', tag: '#2AAF15', tagText: '#000' },
+    { bg: '#33CC00', btn: '#33CC00', bar: '#003300', tag: '#003300', tagText: '#fff' },
+    { bg: '#2AAF15', btn: '#003300', bar: '#33CC00', tag: '#33CC00', tagText: '#000' },
+    { bg: '#003300', btn: '#2AAF15', bar: '#33CC00', tag: '#33CC00', tagText: '#000' },
 ];
 
 const STATUS_CFG = {
@@ -20,7 +20,7 @@ const STATUS_CFG = {
 
 const CSS = `
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
-    body { background-color: #FFFDF0; }
+    body { background-color: #FEFEFE; }
     .font-fredoka { font-family: 'Fredoka', sans-serif; }
     .b-border    { border: 3px solid #1a1a1a; }
     .b-shadow    { box-shadow: 8px 8px 0px #1a1a1a; }
@@ -90,8 +90,8 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister }) 
 
                 {/* ticket notch */}
                 <div className="relative h-0">
-                    <div className="absolute -left-3.5 -top-3.5 w-7 h-7 rounded-full b-border" style={{ background: '#FFFDF0' }} />
-                    <div className="absolute -right-3.5 -top-3.5 w-7 h-7 rounded-full b-border" style={{ background: '#FFFDF0' }} />
+                    <div className="absolute -left-3.5 -top-3.5 w-7 h-7 rounded-full b-border" style={{ background: '#FEFEFE' }} />
+                    <div className="absolute -right-3.5 -top-3.5 w-7 h-7 rounded-full b-border" style={{ background: '#FEFEFE' }} />
                 </div>
 
                 <div className="px-5 pt-5 pb-5 space-y-3">
@@ -111,9 +111,9 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister }) 
                             </div>
                         ))}
                     </div>
-                    <div className="flex items-center gap-2.5 bg-blue-50 b-border rounded-2xl px-4 py-3">
+                    <div className="flex items-center gap-2.5 bg-green-50 b-border rounded-2xl px-4 py-3">
                         <span></span>
-                        <p className="text-xs font-black text-blue-700">Konfirmasi dikirim ke email kamu</p>
+                        <p className="text-xs font-black text-green-700">Konfirmasi dikirim ke email kamu</p>
                     </div>
                     <Link href="/events"
                         className="b-btn b-border flex items-center justify-center w-full gap-2 py-3.5 text-sm font-black text-white rounded-2xl uppercase tracking-widest"
@@ -262,7 +262,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister }) 
     };
 
     const pageBody = (
-        <div className="min-h-screen" style={{ background: '#FFFDF0' }}>
+        <div className="min-h-screen" style={{ background: '#FEFEFE' }}>
             <style>{CSS}</style>
             <div className="fixed inset-0 bg-dots" />
 
@@ -413,11 +413,11 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister }) 
                     <div className="max-w-7xl mx-auto bg-white b-border b-shadow-sm rounded-2xl px-5 sm:px-7 flex items-center justify-between"
                         style={{ height: '72px' }}>
                         <Link href="/events" className="flex items-center gap-2.5">
-                            <div className="w-10 h-10 bg-yellow-400 b-border rounded-xl flex items-center justify-center"
+                            <div className="w-10 h-10 bg-green-500 b-border rounded-xl flex items-center justify-center"
                                 style={{ boxShadow: '3px 3px 0 #1a1a1a' }}>
                                 <BoltIcon className="w-5 h-5 text-black" strokeWidth={3} />
                             </div>
-                            <span className="font-fredoka text-2xl font-bold tracking-tight text-black">EventHub.</span>
+                            <span className="font-fredoka text-2xl font-bold tracking-tight text-black">HIMTI Events</span>
                         </Link>
                         <Link href="/login"
                             className="b-btn text-black b-border text-sm font-black uppercase px-4 py-2 rounded-xl bg-white hover:bg-slate-50 hidden sm:block">
@@ -429,10 +429,10 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister }) 
                 <footer className="mt-8 py-10 bg-white border-t-4 border-black">
                     <div className="max-w-7xl mx-auto px-6 flex flex-col items-center text-center">
                         <div className="flex items-center gap-2.5 mb-3">
-                            <div className="w-10 h-10 bg-yellow-400 b-border rounded-xl flex items-center justify-center" style={{ boxShadow: '3px 3px 0 #1a1a1a' }}>
+                            <div className="w-10 h-10 bg-green-500 b-border rounded-xl flex items-center justify-center" style={{ boxShadow: '3px 3px 0 #1a1a1a' }}>
                                 <span className="text-xl"></span>
                             </div>
-                            <span className="font-fredoka text-2xl font-bold tracking-tight text-black">EventHub.</span>
+                            <span className="font-fredoka text-2xl font-bold tracking-tight text-black">HIMTI Events</span>
                         </div>
                         <p className="text-slate-400 font-black text-xs uppercase tracking-widest">&copy; 2026 EventHub Campus. Stay Awesome!</p>
                     </div>

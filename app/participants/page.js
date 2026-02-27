@@ -159,7 +159,7 @@ export default function ParticipantsPage() {
                 return 'bg-green-100 text-green-800 border-green-300';
             case 'registered':
             case 'terdaftar':
-                return 'bg-blue-100 text-blue-800 border-blue-300';
+                return 'bg-green-100 text-green-800 border-green-300';
             case 'cancelled':
             case 'batal':
                 return 'bg-red-100 text-red-800 border-red-300';
@@ -178,7 +178,7 @@ export default function ParticipantsPage() {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
                     <p className="mt-4 text-gray-600">Loading participants...</p>
                 </div>
             </div>
@@ -208,8 +208,8 @@ export default function ParticipantsPage() {
                                 <p className="text-sm font-medium text-gray-600">Total Peserta</p>
                                 <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total}</p>
                             </div>
-                            <div className="p-3 bg-blue-100 rounded-lg">
-                                <UsersIcon className="h-8 w-8 text-blue-600" />
+                            <div className="p-3 bg-green-100 rounded-lg">
+                                <UsersIcon className="h-8 w-8 text-green-600" />
                             </div>
                         </div>
                     </div>
@@ -230,7 +230,7 @@ export default function ParticipantsPage() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Terdaftar</p>
-                                <p className="text-3xl font-bold text-blue-600 mt-2">{stats.registered}</p>
+                                <p className="text-3xl font-bold text-green-600 mt-2">{stats.registered}</p>
                             </div>
                             <div className="p-3 bg-purple-100 rounded-lg">
                                 <CalendarIcon className="h-8 w-8 text-purple-600" />
@@ -250,7 +250,7 @@ export default function ParticipantsPage() {
                                 placeholder="Cari nama, email, NIM, jurusan..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             />
                         </div>
 
@@ -260,7 +260,7 @@ export default function ParticipantsPage() {
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none"
                             >
                                 <option value="all">Semua Status</option>
                                 <option value="terdaftar">Terdaftar</option>
@@ -275,7 +275,7 @@ export default function ParticipantsPage() {
                             <select
                                 value={eventFilter}
                                 onChange={(e) => setEventFilter(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none"
                             >
                                 <option value="all">Semua Event</option>
                                 {events.map(event => (
@@ -336,7 +336,7 @@ export default function ParticipantsPage() {
                                         <tr key={participant.id} className="hover:bg-gray-50 transition">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
-                                                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white font-semibold">
+                                                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-green-400 to-green-700 flex items-center justify-center text-white font-semibold">
                                                         {participant.nama.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div className="ml-4">

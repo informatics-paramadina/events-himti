@@ -75,7 +75,7 @@ export default function CreateEventPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
-          <a href="/events" className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold">
+          <a href="/events" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold">
             <ArrowLeftIcon className="w-4 h-4" strokeWidth={2.5} />
             Kembali ke Events
           </a>
@@ -99,7 +99,7 @@ export default function CreateEventPage() {
                 value={formData.nama_event}
                 onChange={handleChange}
                 placeholder="Masukkan judul event"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
             </div>
@@ -112,7 +112,7 @@ export default function CreateEventPage() {
                 onChange={handleChange}
                 placeholder="Jelaskan tentang event Anda"
                 rows="4"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
             </div>
@@ -125,7 +125,7 @@ export default function CreateEventPage() {
                   name="tanggal"
                   value={formData.tanggal}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
                 />
               </div>
@@ -136,7 +136,7 @@ export default function CreateEventPage() {
                   name="jam"
                   value={formData.jam}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
                 />
               </div>
@@ -150,7 +150,7 @@ export default function CreateEventPage() {
                 value={formData.lokasi}
                 onChange={handleChange}
                 placeholder="Tempat diadakan event"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
             </div>
@@ -163,7 +163,7 @@ export default function CreateEventPage() {
                   name="kapasitas"
                   value={formData.kapasitas}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
                 />
               </div>
@@ -173,7 +173,7 @@ export default function CreateEventPage() {
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
@@ -184,7 +184,7 @@ export default function CreateEventPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg border-2 border-black hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg border-2 border-black hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               style={{ boxShadow: '4px 4px 0 #000' }}
             >
               {loading ? "Membuat Event..." : "Buat Event"}

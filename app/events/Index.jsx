@@ -5,7 +5,7 @@ import { MapPinIcon, UsersIcon, MagnifyingGlassIcon, PlusIcon, FunnelIcon, BoltI
 
 const CSS = `
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
-    body { background-color: #FFFDF0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: #FEFEFE; font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-fredoka { font-family: 'Fredoka', sans-serif; }
 
     .b-border    { border: 4px solid #000; }
@@ -55,11 +55,11 @@ const CSS = `
 `;
 
 const CARD_ACCENT = [
-    { btn: '#5865F2', bar: '#f97316', cover: 'from-violet-400 to-indigo-600' },
-    { btn: '#111827', bar: '#f87171', cover: 'from-rose-400 to-pink-600'    },
-    { btn: '#059669', bar: '#4ade80', cover: 'from-emerald-400 to-teal-600' },
-    { btn: '#2563eb', bar: '#60a5fa', cover: 'from-blue-400 to-cyan-600'    },
-    { btn: '#7c3aed', bar: '#c084fc', cover: 'from-purple-400 to-violet-600'},
+    { btn: '#2AAF15', bar: '#33CC00', cover: 'from-green-400 to-green-700' },
+    { btn: '#003300', bar: '#2AAF15', cover: 'from-emerald-400 to-green-800' },
+    { btn: '#33CC00', bar: '#2AAF15', cover: 'from-lime-400 to-green-600'   },
+    { btn: '#2AAF15', bar: '#33CC00', cover: 'from-green-500 to-emerald-700' },
+    { btn: '#003300', bar: '#33CC00', cover: 'from-teal-400 to-green-800'   },
 ];
 
 const STATUS_CFG = {
@@ -89,7 +89,7 @@ function HeroCarousel({ events }) {
 
     if (total === 0) return (
         <div className="w-full max-w-sm py-16 font-bold text-center text-slate-400">
-            Belum ada event tersedia
+            Belum terdapat kegiatan yang tersedia saat ini.
         </div>
     );
 
@@ -104,7 +104,7 @@ function HeroCarousel({ events }) {
 
             <div className="flex items-end justify-between mb-8 sm:mb-12">
                 <h3 className="font-fredoka text-[1.75rem] sm:text-[2rem] font-bold leading-none text-slate-900">
-                    Mendatang<span style={{ color: '#5865F2' }}>.</span>
+                    Mendatang<span style={{ color: '#2AAF15' }}>.</span>
                 </h3>
                 {total > 1 && (
                     <div className="flex gap-2 sm:gap-3">
@@ -121,7 +121,7 @@ function HeroCarousel({ events }) {
             </div>
 
             <div className="relative card-3d-scene hero-card-wrap">
-                <div className="card-layer-yellow absolute inset-0 bg-yellow-400 b-border rounded-[2rem] sm:rounded-[2.5rem]"
+                <div className="card-layer-yellow absolute inset-0 bg-green-500 b-border rounded-[2rem] sm:rounded-[2.5rem]"
                     style={{ transform: 'translateX(16px) translateY(16px) rotate(3deg)' }} />
                 <div className="absolute inset-0 bg-black b-border rounded-[2rem] sm:rounded-[2.5rem]"
                     style={{ transform: 'translateX(8px) translateY(8px)' }} />
@@ -131,7 +131,7 @@ function HeroCarousel({ events }) {
                         {item.poster
                             ? <img src={`/storage/${item.poster}`} alt={item.title}
                                 className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
-                            : <div className={`w-full h-full bg-gradient-to-br from-indigo-400 to-blue-600 flex items-end pb-5 pl-6`}>
+                            : <div className={`w-full h-full bg-gradient-to-br from-green-400 to-green-700 flex items-end pb-5 pl-6`}>
                                 <span className="font-bold leading-none select-none font-fredoka text-white/20"
                                     style={{ fontSize: '7.5rem' }}>
                                     {item.title.charAt(0)}
@@ -166,7 +166,7 @@ function HeroCarousel({ events }) {
 
                         <Link href={`/events/${item.id}`}
                             className="b-btn block w-full text-center text-white py-3 sm:py-4 rounded-xl sm:rounded-[1.5rem] b-border font-black text-xs sm:text-sm uppercase tracking-[0.15em]"
-                            style={{ background: '#5865F2', boxShadow: '4px 4px 0 #000' }}>
+                            style={{ background: '#2AAF15', boxShadow: '4px 4px 0 #000' }}>
                             AMBIL TIKET SEKARANG
                         </Link>
                     </div>
@@ -182,7 +182,7 @@ function HeroCarousel({ events }) {
                         <div className="h-full rounded-full"
                             style={{
                                 width: `${((cur + 1) / total) * 100}%`,
-                                background: '#5865F2',
+                                background: '#2AAF15',
                                 borderRight: '3px solid #000',
                                 transition: 'width 0.55s cubic-bezier(.22,1,.36,1)',
                             }} />
@@ -245,7 +245,7 @@ function EventCard({ event, idx, showAdminActions = false }) {
             </div>
 
             <div className="flex flex-col flex-1 gap-4 p-5 sm:gap-5 sm:p-7">
-                <h3 className="font-fredoka text-[1.4rem] sm:text-[1.6rem] font-bold leading-snug text-slate-900 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                <h3 className="font-fredoka text-[1.4rem] sm:text-[1.6rem] font-bold leading-snug text-slate-900 line-clamp-2 group-hover:text-green-600 transition-colors">
                     {event.title}
                 </h3>
 
@@ -294,7 +294,7 @@ function Ticker({ events }) {
     if (events.length === 0) return null;
     return (
         <div className="py-3 overflow-hidden sm:py-4 ticker-wrap"
-            style={{ background: '#FACC15', borderTop: '4px solid #000', borderBottom: '4px solid #000' }}>
+            style={{ background: '#33CC00', borderTop: '4px solid #000', borderBottom: '4px solid #000' }}>
             <div className="ticker-inner">
                 {items.map((e, i) => (
                     <span key={i} className="inline-flex items-center gap-3 px-4 text-xs font-black tracking-wider text-black uppercase sm:px-6 sm:text-sm">
@@ -336,20 +336,20 @@ export default function EventsIndex({ auth, events, filters }) {
 
     if (!isAuthenticated) return (
         <>
-            <Head title="Campus Events" />
+            <Head title="HIMTI Events" />
             <style>{CSS}</style>
-            <div className="min-h-screen overflow-x-hidden" style={{ background: '#FFFDF0' }}>
+            <div className="min-h-screen overflow-x-hidden" style={{ background: '#FEFEFE' }}>
                 <div className="fixed inset-0 bg-dots" />
 
                 <header className="sticky top-0 z-50 px-4 pt-4 pb-3 sm:px-6">
                     <nav className="flex items-center justify-between px-4 mx-auto bg-white sm:px-5 max-w-7xl b-border rounded-2xl sm:px-7"
                         style={{ height: '60px', boxShadow: '6px 6px 0 #000' }}>
                         <Link href="/events" className="flex items-center gap-2.5">
-                            <div className="flex items-center justify-center w-8 h-8 bg-yellow-400 sm:w-10 sm:h-10 b-border rounded-xl b-btn"
+                            <div className="flex items-center justify-center w-8 h-8 bg-green-500 sm:w-10 sm:h-10 b-border rounded-xl b-btn"
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />
                             </div>
-                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight text-black">EventHub.</span>
+                            <span className="font-fredoka text-[1.25rem] sm:text-[1.5rem] font-bold tracking-tight text-black">HIMTI Events</span>
                         </Link>
                     </nav>
                 </header>
@@ -359,16 +359,16 @@ export default function EventsIndex({ auth, events, filters }) {
                     <div className="c-heroIn mt-8 sm:mt-12 bg-white b-border b-shadow rounded-[2rem] sm:rounded-[3.5rem] overflow-hidden relative">
                         <div className="absolute top-0 right-0 p-10 opacity-[0.04] select-none pointer-events-none overflow-hidden"
                             style={{ right: '-2rem', top: '-1rem' }}>
-                            <p className="font-bold leading-none text-black font-fredoka text-[10rem] md:text-[20rem]">EVENT</p>
+                            <p className="font-bold leading-none text-black font-fredoka text-[10rem] md:text-[20rem]">HIMTI</p>
                         </div>
 
                         <div className="grid grid-cols-1 gap-0 lg:grid-cols-12" style={{ minHeight: 'auto' }}>
                         <div className="relative flex flex-col justify-center p-6 text-white border-b-4 border-black sm:p-8 lg:p-10 lg:col-span-7 lg:border-b-0 lg:border-r-4"
-                            style={{ background: '#5865F2' }}>
+                            style={{ background: '#2AAF15' }}>
 
-                            <div className="absolute hidden bg-yellow-400 c-float top-12 right-12 lg:right-24 w-18 h-18 b-border rounded-2xl sm:flex"
+                            <div className="absolute hidden bg-green-300 c-float top-12 right-12 lg:right-24 w-18 h-18 b-border rounded-2xl sm:flex"
                                 style={{ width: '72px', height: '72px', boxShadow: '6px 6px 0 #000' }}></div>
-                            <div className="absolute hidden bg-pink-400 rounded-full c-floatB bottom-16 right-12 lg:right-16 b-border sm:flex"
+                            <div className="absolute hidden bg-green-700 rounded-full c-floatB bottom-16 right-12 lg:right-16 b-border sm:flex"
                                 style={{ width: '60px', height: '60px', boxShadow: '6px 6px 0 #000', animationDelay: '2s' }}></div>
 
                             <div className="relative z-10 flex flex-col items-center w-full max-w-2xl mx-auto space-y-6 text-center lg:mx-0 lg:max-w-xl lg:items-start lg:text-left">
@@ -389,21 +389,21 @@ export default function EventsIndex({ auth, events, filters }) {
                                             textShadow: '4px 4px 0 #000',
                                             WebkitTextStroke: '1px #000',
                                         }}>
-                                        Upgrade Skill
+                                        Pengembangan Kompetensi
                                     </h1>
-                                    <h1 className="font-fredoka font-bold text-yellow-400 leading-[1.1]"
+                                    <h1 className="font-fredoka font-bold text-green-200 leading-[1.1]"
                                         style={{
                                             fontSize: 'clamp(2.5rem, 9vw, 4.5rem)',
                                             textShadow: '4px 4px 0 #000',
                                             WebkitTextStroke: '2px #000',
                                         }}>
-                                        Di Event Kampus.
+                                        Mahasiswa Informatika.
                                     </h1>
                                 </div>
 
                                 <p className="w-full max-w-md text-xs font-bold leading-relaxed sm:text-sm md:text-base text-white/90">
-                                    Workshop, hackathon, dan seminar terbaik daftar langsung,{' '}
-                                    <span className="font-black text-yellow-300">gratis, tanpa login.</span>
+                                    Kegiatan workshop, seminar, dan kompetisi teknologi yang dirancang untuk mendukung peningkatan kemampuan{' '}
+                                    <span className="font-black text-green-200">akademik dan profesional.</span>
                                 </p>
 
                                 <a href="#events"
@@ -417,7 +417,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                     }}
                                     onMouseEnter={e => { e.currentTarget.style.transform='translate(2px,2px)'; e.currentTarget.style.boxShadow='0px 0px 0 #000'; }}
                                     onMouseLeave={e => { e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow='4px 4px 0 #000'; }}>
-                                    EXPLORE EVENTS
+                                    JELAJAHI EVENTS
                                     <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={3} />
                                 </a>
 
@@ -428,7 +428,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                                 style={{ background: bg, boxShadow: '2px 2px 0 rgba(0,0,0,0.2)' }} />
                                         ))}
                                     </div>
-                                    <span className="order-1 text-xs font-black text-white sm:text-sm sm:order-2">+2k teman bergabung!</span>
+                                    <span className="order-1 text-xs font-black text-white sm:text-sm sm:order-2">+2k peserta HIMTI!</span>
                                 </div>
 
                                 <div className="flex flex-wrap items-center justify-center w-full gap-2 pt-2 sm:gap-3 sm:pt-3 lg:justify-start">
@@ -444,7 +444,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                             style={{ lineHeight: 1 }}>
                                             {String(publishedCount).padStart(2,'0')}
                                         </p>
-                                        <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-tight text-white/70 mt-1">Open Now</p>
+                                        <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-tight text-white/70 mt-1">Dibuka</p>
                                     </div>
                                     <div className="bg-white/20 backdrop-blur-sm b-border-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center flex-1 min-w-[90px] max-w-[120px] lg:max-w-none">
                                         <p className="font-bold text-white font-fredoka text-xl sm:text-[1.8rem]"
@@ -470,21 +470,21 @@ export default function EventsIndex({ auth, events, filters }) {
                     <div id="events" className="flex flex-col justify-between gap-5 mb-8 md:flex-row md:items-end md:mb-12">
                         <div className="text-center md:text-left">
                             <div className="flex items-center justify-center gap-3 mb-2 md:justify-start sm:mb-3">
-                                <span className="text-3xl font-bold sm:text-4xl font-fredoka text-slate-900">All Events</span>
+                                <span className="text-3xl font-bold sm:text-4xl font-fredoka text-slate-900">Daftar Event</span>
                                 <span className="px-3 py-1 text-xs font-black text-white sm:text-sm b-border-2 rounded-xl"
-                                    style={{ background: '#5865F2', boxShadow: '3px 3px 0 #000' }}>
+                                    style={{ background: '#2AAF15', boxShadow: '3px 3px 0 #000' }}>
                                     {filteredEvents.length}
                                 </span>
                             </div>
                             <p className="text-xs font-bold sm:text-sm text-slate-400">
-                                {publishedCount} event sedang open semua gratis!
+                                {publishedCount} kegiatan tersedia—pendaftaran gratis dan terbuka untuk semua!
                             </p>
                         </div>
                         <div className="relative">
                             <MagnifyingGlassIcon className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-slate-400" strokeWidth={2.5} />
                             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                                 placeholder="Cari event atau lokasi..."
-                                className="w-full md:w-72 pl-11 pr-5 py-3 sm:py-3.5 bg-white b-border rounded-xl sm:rounded-2xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full md:w-72 pl-11 pr-5 py-3 sm:py-3.5 bg-white b-border rounded-xl sm:rounded-2xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                                 style={{ boxShadow: '4px 4px 0 #000' }} />
                         </div>
                     </div>
@@ -499,10 +499,10 @@ export default function EventsIndex({ auth, events, filters }) {
                               <div className="flex items-center justify-center w-16 h-16 mb-4 text-4xl bg-white sm:w-20 sm:h-20 sm:mb-5 rounded-2xl sm:rounded-3xl b-border"
                                   style={{ boxShadow: '6px 6px 0 #000' }}></div>
                               <h3 className="mb-1 text-xl font-bold sm:text-2xl font-fredoka text-slate-800">
-                                  {search ? 'Nggak Ketemu...' : 'Belum Ada Event'}
+                                  {search ? 'Pencarian Tidak Ditemukan' : 'Belum Terdapat Event'}
                               </h3>
                               <p className="text-xs font-bold sm:text-sm text-slate-400">
-                                  {search ? 'Coba kata kunci lain ya!' : 'Event baru segera hadir, tunggu aja!'}
+                                  {search ? 'Coba dengan kata kunci yang berbeda.' : 'Event berikutnya sedang dalam tahap persiapan—tetap pantau untuk update terbaru!'}
                               </p>
                           </div>}
                 </main>
@@ -510,14 +510,14 @@ export default function EventsIndex({ auth, events, filters }) {
                 <footer className="py-10 mt-12 bg-white sm:mt-16 sm:py-14" style={{ borderTop: '4px solid #000' }}>
                     <div className="flex flex-col items-center gap-4 px-6 mx-auto text-center sm:gap-5 max-w-7xl">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex items-center justify-center w-8 h-8 bg-yellow-400 sm:w-10 sm:h-10 b-border rounded-xl"
+                            <div className="flex items-center justify-center w-8 h-8 bg-green-500 sm:w-10 sm:h-10 b-border rounded-xl"
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />
                             </div>
-                            <span className="text-xl font-bold tracking-tight sm:text-2xl font-fredoka text-black">EventHub.</span>
+                            <span className="text-xl font-bold tracking-tight sm:text-2xl font-fredoka text-black">HIMTI Events</span>
                         </div>
                         <p className="max-w-xs text-xs font-bold sm:text-sm text-slate-400">
-                            Platform event kampus terbaik gratis, fun, dan accessible!
+                            Platform terpadu kegiatan dan pengembangan kompetensi mahasiswa Informatika HIMTI.
                         </p>
                         <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
                             {['Workshop', 'Seminar', 'Hackathon', 'Kompetisi'].map(tag => (
@@ -531,14 +531,14 @@ export default function EventsIndex({ auth, events, filters }) {
                         <div className="flex items-center gap-4 mt-2">
                             {['IG', 'TW'].map((s) => (
                                 <div key={s}
-                                    className="flex items-center justify-center w-8 h-8 text-xs font-black transition-colors bg-white rounded-full cursor-pointer text-black sm:w-9 sm:h-9 b-border-2 hover:bg-yellow-400"
+                                    className="flex items-center justify-center w-8 h-8 text-xs font-black transition-colors bg-white rounded-full cursor-pointer text-black sm:w-9 sm:h-9 b-border-2 hover:bg-green-400"
                                     style={{ boxShadow: '2px 2px 0 #000' }}>
                                     {s}
                                 </div>
                             ))}
                         </div>
                         <p className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest text-slate-300 border-t-2 border-slate-100 pt-5 w-full mt-2 sm:mt-0">
-                             2026 EventHub Creative Labs  Made with  for students
+                             2026 HIMTI Events  Satu Platform, Ribuan Kesempatan
                         </p>
                     </div>
                 </footer>
@@ -558,15 +558,15 @@ export default function EventsIndex({ auth, events, filters }) {
                     {isAdmin && (
                         <Link href="/events/create"
                             className="b-btn b-border inline-flex items-center justify-center gap-2 text-white px-5 py-2.5 rounded-2xl font-black text-sm uppercase tracking-widest w-full sm:w-auto mt-2 sm:mt-0"
-                            style={{ background: '#5865F2', boxShadow: '4px 4px 0 #000' }}>
+                            style={{ background: '#2AAF15', boxShadow: '4px 4px 0 #000' }}>
                             <PlusIcon className="w-4 h-4" strokeWidth={3} /> Buat Event
                         </Link>
                     )}
                 </div>
             }>
-            <Head title="Events" />
+            <Head title="HIMTI Events" />
             <style>{CSS}</style>
-            <div style={{ background: '#FFFDF0' }}>
+            <div style={{ background: '#FEFEFE' }}>
                 <div className="fixed inset-0 bg-dots" />
                 
                 {/* Hero Section */}
@@ -575,7 +575,7 @@ export default function EventsIndex({ auth, events, filters }) {
                         <div className="grid grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-2 lg:items-center">
                             <div className="flex flex-col justify-center order-2 lg:order-1">
                                 <div className="inline-flex items-center gap-2 w-fit mb-4 sm:mb-5">
-                                    <div className="bg-yellow-400 b-border px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-black uppercase"
+                                    <div className="bg-green-500 b-border px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-black uppercase"
                                         style={{ boxShadow: '3px 3px 0 #000' }}>
                                         KAMPUS LIFE IS FUN!
                                     </div>
@@ -583,19 +583,19 @@ export default function EventsIndex({ auth, events, filters }) {
 
                                 <div className="mb-4 sm:mb-6">
                                     <h1 className="text-4xl font-black leading-tight sm:text-5xl lg:text-6xl font-fredoka text-slate-900">
-                                        Upgrade Skill<br />
+                                        Pengembangan<br />
                                         <span className="relative">
-                                            Di Event
-                                            <span className="absolute bottom-0 left-0 w-full h-3 bg-yellow-300" style={{ zIndex: -1 }} />
+                                            Kompetensi
+                                            <span className="absolute bottom-0 left-0 w-full h-3 bg-green-300" style={{ zIndex: -1 }} />
                                         </span>
                                         <br />
-                                        Kampus.
+                                        Mahasiswa Informatika.
                                     </h1>
                                 </div>
 
                                 <p className="w-full max-w-md text-xs font-bold leading-relaxed sm:text-sm md:text-base text-slate-600">
-                                    Workshop, hackathon, dan seminar terbaik{' '}
-                                    <span className="font-black text-slate-900">daftar langsung, gratis, tanpa login.</span>
+                                    Kegiatan workshop, seminar, dan kompetisi teknologi{' '}
+                                    <span className="font-black text-slate-900">untuk meningkatkan kemampuan akademik dan profesional.</span>
                                 </p>
 
                                 <a href="#events"
@@ -609,7 +609,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                     }}
                                     onMouseEnter={e => { e.currentTarget.style.transform='translate(2px,2px)'; e.currentTarget.style.boxShadow='0px 0px 0 #000'; }}
                                     onMouseLeave={e => { e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow='4px 4px 0 #000'; }}>
-                                    EXPLORE EVENTS
+                                    JELAJAHI EVENTS
                                     <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={3} />
                                 </a>
 
@@ -620,7 +620,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                                 style={{ background: bg, boxShadow: '2px 2px 0 rgba(0,0,0,0.2)' }} />
                                         ))}
                                     </div>
-                                    <span className="text-xs font-black text-slate-700 sm:text-sm">+2k teman bergabung!</span>
+                                    <span className="text-xs font-black text-slate-700 sm:text-sm">+2k peserta HIMTI!</span>
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-2 w-full pt-4 sm:gap-3 sm:pt-6">
@@ -636,7 +636,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                             style={{ lineHeight: 1 }}>
                                             {String(publishedCount).padStart(2,'0')}
                                         </p>
-                                        <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-tight text-slate-500 mt-1">Open Now</p>
+                                        <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-tight text-slate-500 mt-1">Dibuka</p>
                                     </div>
                                     <div className="bg-slate-100 b-border-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center flex-1 min-w-[90px]">
                                         <p className="font-bold text-slate-900 font-fredoka text-xl sm:text-[1.5rem]"
@@ -662,7 +662,7 @@ export default function EventsIndex({ auth, events, filters }) {
                 </div>
 
                 {/* Events Section */}
-                <div className="py-8 sm:py-16" style={{ background: '#FFFDF0' }}>
+                <div className="py-8 sm:py-16" style={{ background: '#FEFEFE' }}>
                     <div className="px-4 mx-auto space-y-6 sm:space-y-10 max-w-7xl sm:px-6 lg:px-8">
                         <div className="flex flex-col gap-3 p-4 bg-white b-border rounded-2xl sm:flex-row"
                             style={{ boxShadow: '5px 5px 0 #000' }}>
@@ -670,7 +670,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                 <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" strokeWidth={2.5} />
                                 <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                                     placeholder="Cari event..."
-                                    className="w-full pl-10 pr-4 py-2.5 b-border rounded-xl text-sm font-bold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50" />
+                                    className="w-full pl-10 pr-4 py-2.5 b-border rounded-xl text-sm font-bold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500 bg-slate-50" />
                             </div>
                             {isAdmin && (
                                 <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
@@ -679,7 +679,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                         <button key={key} onClick={() => handleFilterChange(key)}
                                             className={`b-btn b-border-2 flex-1 sm:flex-none px-3 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-wider ${statusFilter === key ? 'text-white' : 'bg-white text-slate-600'}`}
                                             style={{
-                                                background: statusFilter === key ? '#5865F2' : '',
+                                                background: statusFilter === key ? '#2AAF15' : '',
                                                 boxShadow: '3px 3px 0 #000',
                                             }}>
                                             {label}
@@ -707,12 +707,12 @@ export default function EventsIndex({ auth, events, filters }) {
                                   {search ? 'Nggak Ketemu...' : 'Belum Ada Event'}
                               </h3>
                               <p className="mb-5 text-xs font-bold sm:mb-6 sm:text-sm text-slate-400">
-                                  {search ? 'Coba kata kunci lain' : 'Mulai buat event pertama!'}
+                                  {search ? 'Silakan coba dengan kata kunci yang berbeda.' : 'Mulai buat kegiatan pertama Anda!'}
                               </p>
                               {isAdmin && !search && (
                                   <Link href="/events/create"
                                       className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-black tracking-widest text-white uppercase b-btn b-border rounded-xl sm:rounded-2xl"
-                                      style={{ background: '#5865F2', boxShadow: '4px 4px 0 #000' }}>
+                                      style={{ background: '#2AAF15', boxShadow: '4px 4px 0 #000' }}>
                                       <PlusIcon className="w-4 h-4" strokeWidth={3} /> Buat Event
                                   </Link>
                               )}
