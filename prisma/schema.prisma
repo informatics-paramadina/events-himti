@@ -48,6 +48,7 @@ model Participant {
   jurusan   String
   angkatan  String
   status    String
+  role      String   @default("PESERTA") // PESERTA, DOSEN, PANITIA
 
   eventId   Int
   event     Event    @relation(fields: [eventId], references: [id])

@@ -35,6 +35,7 @@ export async function POST(req) {
       jurusan,
       angkatan,
       status,
+      role,
       eventId,
     } = body;
 
@@ -92,6 +93,7 @@ export async function POST(req) {
         jurusan,
         angkatan,
         status: status || "terdaftar",
+        role: role || "PESERTA",
         eventId,
       },
       include: { event: true },

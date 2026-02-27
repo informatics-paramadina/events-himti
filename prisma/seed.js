@@ -129,6 +129,7 @@ async function main() {
       jurusan: "Teknik Informatika",
       angkatan: "2023",
       status: "hadir",
+      role: "PESERTA",
       eventId: event1.id,
     },
   });
@@ -142,6 +143,7 @@ async function main() {
       jurusan: "Teknik Informatika",
       angkatan: "2024",
       status: "hadir",
+      role: "PESERTA",
       eventId: event1.id,
     },
   });
@@ -155,6 +157,7 @@ async function main() {
       jurusan: "Teknik Informatika",
       angkatan: "2023",
       status: "terdaftar",
+      role: "PANITIA",
       eventId: event1.id,
     },
   });
@@ -169,6 +172,7 @@ async function main() {
       jurusan: "Sistem Informasi",
       angkatan: "2023",
       status: "terdaftar",
+      role: "DOSEN",
       eventId: event2.id,
     },
   });
@@ -182,6 +186,7 @@ async function main() {
       jurusan: "Sistem Informasi",
       angkatan: "2024",
       status: "hadir",
+      role: "PESERTA",
       eventId: event2.id,
     },
   });
@@ -195,6 +200,7 @@ async function main() {
       jurusan: "Teknik Informatika",
       angkatan: "2023",
       status: "terdaftar",
+      role: "PESERTA",
       eventId: event2.id,
     },
   });
@@ -209,6 +215,7 @@ async function main() {
       jurusan: "Teknik Informatika",
       angkatan: "2024",
       status: "hadir",
+      role: "PANITIA",
       eventId: event3.id,
     },
   });

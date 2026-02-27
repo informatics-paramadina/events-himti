@@ -52,6 +52,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         no_wa: '',
         jurusan: '',
         angkatan: '',
+        role: 'PESERTA',
     });
     const [errors, setErrors] = useState({});
     const [processing, setProcessing] = useState(false);
@@ -101,6 +102,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                     no_wa: formData.no_wa,
                     jurusan: formData.jurusan || 'Tidak disebutkan',
                     angkatan: formData.angkatan || 'Tidak disebutkan',
+                    role: formData.role || 'PESERTA',
                     status: 'terdaftar',
                     eventId: eventId,
                 }),
@@ -119,6 +121,8 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                 no_wa: '',
                 jurusan: '',
                 angkatan: '',
+                role: 'PESERTA',
+                angkatan: '',
             });
         } catch (error) {
             setErrors({ submit: error.message });
@@ -134,6 +138,11 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         { key: 'no_wa',    label: 'WhatsApp',     placeholder: '081234567890',       type: 'tel',   required: true  },
         { key: 'jurusan',  label: 'Jurusan',      placeholder: 'Teknik Informatika', type: 'text',  required: false },
         { key: 'angkatan', label: 'Angkatan',     placeholder: '2021',               type: 'text',  required: false },
+        { key: 'role',     label: 'Mendaftar Sebagai', placeholder: '',                type: 'select', required: true, options: [
+            { value: 'PESERTA', label: '🎓 Peserta' },
+            { value: 'DOSEN', label: '👨‍🏫 Dosen' },
+            { value: 'PANITIA', label: '👔 Panitia' },
+        ]},
     ];
 
     /* render fn, not component  avoids input remount on typing */

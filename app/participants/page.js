@@ -316,6 +316,9 @@ export default function ParticipantsPage() {
                                         Status
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Role
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Kontak
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -326,7 +329,7 @@ export default function ParticipantsPage() {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredParticipants.length === 0 ? (
                                     <tr>
-                                        <td colSpan="7" className="px-6 py-12 text-center">
+                                        <td colSpan="8" className="px-6 py-12 text-center">
                                             <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
                                             <p className="mt-2 text-sm text-gray-500">Tidak ada peserta ditemukan</p>
                                         </td>
@@ -362,6 +365,17 @@ export default function ParticipantsPage() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusColor(participant.status)}`}>
                                                     {participant.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${
+                                                    participant.role === 'DOSEN' 
+                                                        ? 'bg-purple-100 text-purple-700 border border-purple-300'
+                                                        : participant.role === 'PANITIA'
+                                                        ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                                                        : 'bg-green-100 text-green-700 border border-green-300'
+                                                }`}>
+                                                    {participant.role === 'DOSEN' ? '👨‍🏫 Dosen' : participant.role === 'PANITIA' ? '👔 Panitia' : '🎓 Peserta'}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

@@ -495,7 +495,16 @@ export default function Dashboard() {
                                                     <p className="text-xs text-gray-500 truncate">
                                                         {participant.event?.nama_event || 'Event tidak ditemukan'}
                                                     </p>
-                                                    <div className="mt-1 flex items-center gap-2">
+                                                    <div className="mt-1 flex items-center gap-2 flex-wrap">
+                                                        <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full ${
+                                                            participant.role === 'DOSEN' 
+                                                                ? 'bg-purple-100 text-purple-700'
+                                                                : participant.role === 'PANITIA'
+                                                                ? 'bg-blue-100 text-blue-700'
+                                                                : 'bg-green-100 text-green-700'
+                                                        }`}>
+                                                            {participant.role === 'DOSEN' ? '👨‍🏫 Dosen' : participant.role === 'PANITIA' ? '👔 Panitia' : '🎓 Peserta'}
+                                                        </span>
                                                         <span className="text-xs text-gray-500">
                                                             {participant.jurusan}
                                                         </span>
