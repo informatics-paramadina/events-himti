@@ -176,9 +176,7 @@ https://nextjs.org/docs/app/building-your-application/deploying
 ## 🔮 Future Improvements
 
 * Admin authentication
-* Event editing & deletion
 * Participant export (Excel)
-* Dashboard analytics
 * Email confirmation system
 
 ---
