@@ -12,6 +12,7 @@ import {
     ChartBarIcon,
     ArrowTrendingUpIcon,
     UserGroupIcon,
+    ArrowDownTrayIcon,
 } from '@heroicons/react/24/outline';
 
 export default function Dashboard() {
@@ -29,10 +30,45 @@ export default function Dashboard() {
     const [editFormData, setEditFormData] = useState({});
     const [showEditModal, setShowEditModal] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
+    const [exportingId, setExportingId] = useState(null);
 
     useEffect(() => {
         fetchDashboardData();
     }, []);
+
+    async function handleExportCSV(eventId, eventName) {
+        try {
+            setExportingId(eventId);
+            
+            const response = await fetch(`/api/events/${eventId}/export`);
+            
+            if (!response.ok) {
+                throw new Error('Export failed');
+            }
+            
+            // Get the blob from response
+            const blob = await response.blob();
+            
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `peserta_${eventName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            
+            // Cleanup
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            alert('✅ Data berhasil diexport!');
+        } catch (error) {
+            console.error('Error exporting CSV:', error);
+            alert('❌ Gagal export data. Silakan coba lagi.');
+        } finally {
+            setExportingId(null);
+        }
+    }
 
     async function fetchDashboardData() {
         try {
@@ -431,7 +467,16 @@ export default function Dashboard() {
                                                         )}
 
                                                         {/* Action Buttons */}
-                                                        <div className="mt-4 flex gap-2">
+                                                        <div className="mt-4 flex gap-2 flex-wrap">
+                                                            <button
+                                                                onClick={() => handleExportCSV(event.id, event.nama_event)}
+                                                                disabled={exportingId === event.id || event.participantCount === 0}
+                                                                className="px-3 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                                                                title={event.participantCount === 0 ? 'Belum ada peserta' : 'Export data peserta ke CSV'}
+                                                            >
+                                                                <ArrowDownTrayIcon className="h-4 w-4" />
+                                                                {exportingId === event.id ? 'Exporting...' : 'Export CSV'}
+                                                            </button>
                                                             <button
                                                                 onClick={() => openEditModal(event)}
                                                                 className="px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
