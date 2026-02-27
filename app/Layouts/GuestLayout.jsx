@@ -14,12 +14,6 @@ export default function Guest({ children }) {
                         <Link href="/events" className="text-gray-700 hover:text-green-600 transition">
                             Events
                         </Link>
-                        <Link href="/login" className="text-gray-700 hover:text-green-600 transition">
-                            Login
-                        </Link>
-                        <Link href="/register" className="text-gray-700 hover:text-green-600 transition">
-                            Register
-                        </Link>
                     </nav>
                 </div>
             </div>

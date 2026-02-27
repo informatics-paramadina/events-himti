@@ -485,10 +485,6 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                             </div>
                             <span className="font-fredoka text-2xl font-bold tracking-tight text-black">HIMTI Events</span>
                         </Link>
-                        <Link href="/login"
-                            className="b-btn b-border text-sm font-black text-black uppercase px-4 py-2 rounded-xl bg-white hover:bg-slate-50 hidden sm:block">
-                            Sign In
-                        </Link>
                     </div>
                 </header>
                 <main className="flex-1">{pageBody}</main>

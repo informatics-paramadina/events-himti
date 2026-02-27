@@ -1,8 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, CalendarIcon, ClockIcon, MapPinIcon, UsersIcon, BoltIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
+
+const CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+  .font-fredoka { font-family: 'Fredoka', sans-serif; }
+  .b-border    { border: 3px solid #1a1a1a; }
+  .b-border-2  { border: 2px solid #1a1a1a; }
+  .b-shadow    { box-shadow: 8px 8px 0px #1a1a1a; }
+  .b-shadow-md { box-shadow: 6px 6px 0px #1a1a1a; }
+  .b-shadow-sm { box-shadow: 4px 4px 0px #1a1a1a; }
+  .b-btn       { transition: all 0.12s ease; }
+  .b-btn:hover { transform: translate(2px,2px); box-shadow: 0px 0px 0px #1a1a1a !important; }
+  .b-btn:active { transform: translate(3px,3px); box-shadow: 0px 0px 0px #1a1a1a !important; }
+  .bg-dots {
+    background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes bar    { from{width:0} }
+  .c-fadeUp { animation: fadeUp 0.5s cubic-bezier(.22,1,.36,1) both; }
+  .c-bar    { animation: bar 1.2s ease both; }
+`;
+
+const FORM_FIELDS = [
+  { key: "nama_event", label: "Judul Event", placeholder: "Workshop Web Development", type: "text", icon: BoltIcon, required: true, fullWidth: true },
+  { key: "deskripsi", label: "Deskripsi", placeholder: "Jelaskan tentang event yang akan diselenggarakan...", type: "textarea", icon: null, required: true, fullWidth: true },
+  { key: "tanggal", label: "Tanggal", placeholder: "", type: "date", icon: CalendarIcon, required: true },
+  { key: "jam", label: "Waktu", placeholder: "", type: "time", icon: ClockIcon, required: true },
+  { key: "lokasi", label: "Lokasi", placeholder: "Auditorium Kampus", type: "text", icon: MapPinIcon, required: true, fullWidth: true },
+  { key: "kapasitas", label: "Kuota Peserta", placeholder: "50", type: "number", icon: UsersIcon, required: true },
+  { key: "status", label: "Status", placeholder: "", type: "select", icon: null, required: false, options: [{ value: "DRAFT", label: "📝 Draft" }, { value: "PUBLISHED", label: "🚀 Published" }] },
+];
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -21,7 +55,7 @@ export default function CreateEventPage() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setError("");
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: name === "kapasitas" ? (value === "" ? "" : parseInt(value, 10) || 0) : value,
     }));
@@ -33,18 +67,15 @@ export default function CreateEventPage() {
     setLoading(true);
 
     try {
-      // Validasi form
       if (!formData.nama_event || !formData.deskripsi || !formData.tanggal || !formData.jam || !formData.lokasi || !formData.kapasitas) {
-        setError("Semua field harus diisi");
+        setError("Semua field harus diisi!");
         setLoading(false);
         return;
       }
 
       const response = await fetch("/api/events", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nama_event: formData.nama_event,
           deskripsi: formData.deskripsi,
@@ -60,8 +91,7 @@ export default function CreateEventPage() {
         throw new Error(data.message || "Gagal membuat event");
       }
 
-      const newEvent = await response.json();
-      alert("Event berhasil dibuat!");
+      await response.json();
       router.push("/events");
     } catch (err) {
       console.error("Error creating event:", err);
@@ -71,127 +101,202 @@ export default function CreateEventPage() {
     }
   };
 
+  const completedFields = [formData.nama_event, formData.deskripsi, formData.tanggal, formData.jam, formData.lokasi, formData.kapasitas].filter(Boolean).length;
+  const pct = Math.round((completedFields / 6) * 100);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-6">
-          <a href="/events" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold">
-            <ArrowLeftIcon className="w-4 h-4" strokeWidth={2.5} />
-            Kembali ke Events
-          </a>
+    <div className="min-h-screen" style={{ background: "#FEFEFE" }}>
+      <style>{CSS}</style>
+      <div className="fixed inset-0 bg-dots" />
+
+      {/* Hero header */}
+      <div className="relative overflow-hidden" style={{ background: "#2AAF15" }}>
+        {/* Big letter watermark */}
+        <div className="font-fredoka absolute right-4 -bottom-6 font-bold text-white/10 leading-none select-none pointer-events-none"
+          style={{ fontSize: "clamp(8rem, 22vw, 16rem)" }}>
+          +
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 border-4 border-black" style={{ boxShadow: '8px 8px 0 #000' }}>
-          <h1 className="text-3xl font-bold mb-6 font-fredoka">Buat Event Baru</h1>
+        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
+          {/* Back button */}
+          <a href="/events"
+            className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-2xl text-sm font-black w-fit uppercase tracking-wider mb-8"
+            style={{ boxShadow: "4px 4px 0 #1a1a1a" }}>
+            <ArrowLeftIcon className="w-4 h-4" strokeWidth={3} />
+            Kembali
+          </a>
 
-          {error && (
-            <div className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-lg text-red-700 font-semibold">
-              {error}
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white b-border rounded-2xl flex items-center justify-center flex-shrink-0"
+              style={{ boxShadow: "4px 4px 0 #1a1a1a" }}>
+              <BoltIcon className="w-7 h-7 text-black" strokeWidth={2.5} />
             </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Judul Event</label>
-              <input
-                type="text"
-                name="nama_event"
-                value={formData.nama_event}
-                onChange={handleChange}
-                placeholder="Masukkan judul event"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
+              <p className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-1">Formulir Baru</p>
+              <h1 className="font-fredoka text-3xl sm:text-4xl font-bold text-white"
+                style={{ textShadow: "3px 3px 0 rgba(0,0,0,0.15)" }}>
+                Buat Event<span className="text-black">.</span>
+              </h1>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
-              <textarea
-                name="deskripsi"
-                value={formData.deskripsi}
-                onChange={handleChange}
-                placeholder="Jelaskan tentang event Anda"
-                rows="4"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
+          {/* Progress bar */}
+          <div className="mt-6 flex items-center gap-3">
+            <div className="flex-1 h-3 overflow-hidden rounded-full b-border-2 bg-white/30">
+              <div className="h-full rounded-full c-bar"
+                style={{
+                  width: `${pct}%`,
+                  background: "#fff",
+                  borderRight: pct > 0 && pct < 100 ? "3px solid #1a1a1a" : "none",
+                  transition: "width 0.55s cubic-bezier(.22,1,.36,1)",
+                }} />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
-                <input
-                  type="date"
-                  name="tanggal"
-                  value={formData.tanggal}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Waktu</label>
-                <input
-                  type="time"
-                  name="jam"
-                  value={formData.jam}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Lokasi</label>
-              <input
-                type="text"
-                name="lokasi"
-                value={formData.lokasi}
-                onChange={handleChange}
-                placeholder="Tempat diadakan event"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Kuota Peserta</label>
-                <input
-                  type="number"
-                  name="kapasitas"
-                  value={formData.kapasitas}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="DRAFT">Draft</option>
-                  <option value="PUBLISHED">Published</option>
-                </select>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg border-2 border-black hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-              style={{ boxShadow: '4px 4px 0 #000' }}
-            >
-              {loading ? "Membuat Event..." : "Buat Event"}
-            </button>
-          </form>
+            <span className="text-white font-black text-xs tabular-nums"
+              style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.15)" }}>
+              {completedFields}/6
+            </span>
+          </div>
         </div>
       </div>
+
+      {/* Form card */}
+      <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 pb-12">
+        <div className="c-fadeUp bg-white b-border b-shadow overflow-hidden rounded-[2rem]">
+          <div className="p-6 sm:p-8">
+            {/* Error message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-100 b-border rounded-2xl flex items-start gap-3"
+                style={{ boxShadow: "3px 3px 0 #f87171" }}>
+                <span className="text-lg">⚠️</span>
+                <div>
+                  <p className="text-[11px] font-black text-red-400 uppercase tracking-widest">Error</p>
+                  <p className="text-sm font-bold text-red-700 mt-0.5">{error}</p>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Render fields */}
+              {(() => {
+                const elements = [];
+                let i = 0;
+                while (i < FORM_FIELDS.length) {
+                  const field = FORM_FIELDS[i];
+                  if (field.fullWidth) {
+                    elements.push(
+                      <FieldInput key={field.key} field={field} value={formData[field.key]} onChange={handleChange} />
+                    );
+                    i++;
+                  } else {
+                    // Check if next field is also not fullWidth → pair them
+                    const next = FORM_FIELDS[i + 1];
+                    if (next && !next.fullWidth) {
+                      elements.push(
+                        <div key={`grid-${field.key}`} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <FieldInput field={field} value={formData[field.key]} onChange={handleChange} />
+                          <FieldInput field={next} value={formData[next.key]} onChange={handleChange} />
+                        </div>
+                      );
+                      i += 2;
+                    } else {
+                      elements.push(
+                        <FieldInput key={field.key} field={field} value={formData[field.key]} onChange={handleChange} />
+                      );
+                      i++;
+                    }
+                  }
+                }
+                return elements;
+              })()}
+
+              {/* Divider */}
+              <div className="border-t-2 border-dashed border-slate-200" />
+
+              {/* Submit button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="b-btn b-border w-full py-4 rounded-2xl font-black text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50 uppercase tracking-widest"
+                style={{ background: "#2AAF15", boxShadow: "4px 4px 0 #1a1a1a" }}>
+                {loading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Membuat Event...
+                  </>
+                ) : (
+                  <>
+                    <CheckBadgeIcon className="w-5 h-5" />
+                    Buat Event Sekarang
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 sm:px-8 pb-6">
+            <div className="flex items-center gap-2.5 bg-slate-50 b-border rounded-2xl px-4 py-3">
+              <span className="text-sm">💡</span>
+              <p className="text-[11px] font-black text-slate-500">
+                Event dengan status <span className="text-slate-900">Draft</span> tidak akan ditampilkan ke peserta
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FieldInput({ field, value, onChange }) {
+  const { key, label, placeholder, type, icon: Icon, required, options } = field;
+
+  const inputClass = "w-full px-3.5 py-2.5 rounded-xl text-sm font-bold placeholder-slate-300 focus:outline-none transition-all b-border bg-white text-slate-900";
+  const inputStyle = { boxShadow: "3px 3px 0 #1a1a1a" };
+
+  return (
+    <div>
+      <label className="flex items-center gap-1.5 text-[11px] font-black text-slate-600 uppercase tracking-wider mb-2">
+        {Icon && <Icon className="w-3.5 h-3.5" strokeWidth={2.5} />}
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </label>
+
+      {type === "textarea" ? (
+        <textarea
+          name={key}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          rows="4"
+          required={required}
+          className={`${inputClass} resize-none`}
+          style={inputStyle}
+        />
+      ) : type === "select" ? (
+        <select
+          name={key}
+          value={value}
+          onChange={onChange}
+          className={`${inputClass} cursor-pointer`}
+          style={inputStyle}>
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type={type}
+          name={key}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          required={required}
+          min={type === "number" ? "1" : undefined}
+          className={inputClass}
+          style={inputStyle}
+        />
+      )}
     </div>
   );
 }

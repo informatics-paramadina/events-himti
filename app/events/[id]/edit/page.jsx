@@ -1,21 +1,120 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { dummyEvents } from "./data/dummyEvents";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { ArrowLeftIcon, CalendarIcon, ClockIcon, MapPinIcon, UsersIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon } from "@heroicons/react/24/solid";
+import { useState, useEffect } from "react";
+
+const CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+  .font-fredoka { font-family: 'Fredoka', sans-serif; }
+  .b-border    { border: 3px solid #1a1a1a; }
+  .b-border-2  { border: 2px solid #1a1a1a; }
+  .b-shadow    { box-shadow: 8px 8px 0px #1a1a1a; }
+  .b-shadow-sm { box-shadow: 4px 4px 0px #1a1a1a; }
+  .b-btn       { transition: all 0.12s ease; }
+  .b-btn:hover { transform: translate(2px,2px); box-shadow: 0px 0px 0px #1a1a1a !important; }
+  .b-btn:active { transform: translate(3px,3px); box-shadow: 0px 0px 0px #1a1a1a !important; }
+  .bg-dots {
+    background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  @keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes bar     { from{width:0} }
+  @keyframes bounce1 { 0%,80%,100%{transform:scale(0)} 40%{transform:scale(1)} }
+  .c-fadeUp { animation: fadeUp 0.5s cubic-bezier(.22,1,.36,1) both; }
+  .c-bar    { animation: bar 1.2s ease both; }
+`;
+
+const FORM_FIELDS = [
+  { key: "nama_event", label: "Judul Event", placeholder: "Workshop Web Development", type: "text", icon: PencilSquareIcon, required: true, fullWidth: true },
+  { key: "deskripsi", label: "Deskripsi", placeholder: "Jelaskan tentang event yang akan diselenggarakan...", type: "textarea", icon: null, required: true, fullWidth: true },
+  { key: "tanggal", label: "Tanggal", placeholder: "", type: "date", icon: CalendarIcon, required: true },
+  { key: "jam", label: "Waktu", placeholder: "", type: "time", icon: ClockIcon, required: true },
+  { key: "lokasi", label: "Lokasi", placeholder: "Auditorium Kampus", type: "text", icon: MapPinIcon, required: true, fullWidth: true },
+  { key: "kapasitas", label: "Kuota Peserta", placeholder: "50", type: "number", icon: UsersIcon, required: true },
+  { key: "status", label: "Status", placeholder: "", type: "select", icon: null, required: false, options: [{ value: "DRAFT", label: "📝 Draft" }, { value: "PUBLISHED", label: "🚀 Published" }, { value: "CLOSED", label: "🔒 Closed" }] },
+];
 
 export default function EditEventPage() {
   const params = useParams();
-  const eventId = parseInt(params.id);
-  const event = dummyEvents.find(e => e.id === eventId);
-  const [formData, setFormData] = useState(event || {});
+  const router = useRouter();
+  const eventId = params.id;
+  const [formData, setFormData] = useState({
+    nama_event: '',
+    deskripsi: '',
+    tanggal: '',
+    jam: '',
+    lokasi: '',
+    kapasitas: '',
+    status: 'DRAFT',
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
-  if (!event) {
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const res = await fetch(`/api/events?id=${eventId}`);
+        if (!res.ok) throw new Error('Event tidak ditemukan');
+        const data = await res.json();
+        const event = Array.isArray(data) ? data.find(e => e.id == eventId) : data;
+        if (!event) throw new Error('Event tidak ditemukan');
+        setFormData({
+          nama_event: event.nama_event || '',
+          deskripsi: event.deskripsi || '',
+          tanggal: event.tanggal ? event.tanggal.split('T')[0] : '',
+          jam: event.jam || '',
+          lokasi: event.lokasi || '',
+          kapasitas: event.kapasitas || '',
+          status: event.status || 'DRAFT',
+        });
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvent();
+  }, [eventId]);
+
+  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Event not found</h1>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#FEFEFE' }}>
+        <style>{CSS}</style>
+        <div className="fixed inset-0 bg-dots" />
+        <div className="relative z-10 text-center">
+          <div className="w-20 h-20 bg-white b-border rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ boxShadow: '6px 6px 0 #1a1a1a' }}>
+            <div className="flex gap-1.5">
+              {[0, 0.15, 0.3].map((d, i) => (
+                <div key={i} className="w-3 h-3 rounded-full" style={{ background: '#2AAF15', animation: 'bounce1 1.2s infinite ease-in-out', animationDelay: `${d}s` }} />
+              ))}
+            </div>
+          </div>
+          <p className="font-fredoka text-xl font-bold text-slate-900">Memuat Event<span style={{ color: '#2AAF15' }}>...</span></p>
+          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Mohon tunggu sebentar</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !formData.nama_event) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#FEFEFE' }}>
+        <style>{CSS}</style>
+        <div className="fixed inset-0 bg-dots" />
+        <div className="relative z-10 text-center">
+          <div className="w-20 h-20 bg-white b-border rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ boxShadow: '6px 6px 0 #1a1a1a' }}>
+            <span className="text-3xl">🔍</span>
+          </div>
+          <h1 className="font-fredoka text-2xl font-bold text-slate-900">Event Tidak Ditemukan</h1>
+          <p className="text-sm font-bold text-slate-400 mt-2 mb-6">Event yang kamu cari tidak tersedia atau sudah dihapus.</p>
+          <a href="/events" className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-2xl text-sm font-black uppercase tracking-wider" style={{ boxShadow: '4px 4px 0 #1a1a1a' }}>
+            ← Kembali ke Events
+          </a>
         </div>
       </div>
     );
@@ -23,121 +122,247 @@ export default function EditEventPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setError('');
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'kapasitas' ? (value === '' ? '' : parseInt(value, 10) || 0) : value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated event:", formData);
-    // In a real app, this would send to backend
+    setError('');
+    setSaving(true);
+
+    try {
+      if (!formData.nama_event || !formData.deskripsi || !formData.tanggal || !formData.jam || !formData.lokasi || !formData.kapasitas) {
+        setError("Semua field harus diisi!");
+        setSaving(false);
+        return;
+      }
+
+      const response = await fetch(`/api/events?id=${eventId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nama_event: formData.nama_event,
+          deskripsi: formData.deskripsi,
+          tanggal: formData.tanggal,
+          jam: formData.jam,
+          lokasi: formData.lokasi,
+          kapasitas: parseInt(formData.kapasitas, 10),
+          status: formData.status,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Gagal menyimpan perubahan');
+      }
+
+      router.push(`/events/${eventId}`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  const completedFields = [formData.nama_event, formData.deskripsi, formData.tanggal, formData.jam, formData.lokasi, formData.kapasitas].filter(Boolean).length;
+  const pct = Math.round((completedFields / 6) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-6">
-          <a href="/events" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold">
-            <ArrowLeftIcon className="w-4 h-4" strokeWidth={2.5} />
-            Kembali ke Events
-          </a>
+    <div className="min-h-screen" style={{ background: "#FEFEFE" }}>
+      <style>{CSS}</style>
+      <div className="fixed inset-0 bg-dots" />
+
+      {/* Hero header */}
+      <div className="relative overflow-hidden" style={{ background: "#003300" }}>
+        {/* Big letter watermark */}
+        <div className="font-fredoka absolute right-4 -bottom-6 font-bold text-white/10 leading-none select-none pointer-events-none"
+          style={{ fontSize: "clamp(8rem, 22vw, 16rem)" }}>
+          ✎
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 border-4 border-black" style={{ boxShadow: '8px 8px 0 #000' }}>
-          <h1 className="text-3xl font-bold mb-6 font-fredoka">Edit Event</h1>
+        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
+          {/* Back button */}
+          <a href={`/events/${eventId}`}
+            className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-2xl text-sm font-black w-fit uppercase tracking-wider mb-8"
+            style={{ boxShadow: "4px 4px 0 #1a1a1a" }}>
+            <ArrowLeftIcon className="w-4 h-4" strokeWidth={3} />
+            Kembali
+          </a>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white b-border rounded-2xl flex items-center justify-center shrink-0"
+              style={{ boxShadow: "4px 4px 0 #1a1a1a" }}>
+              <PencilSquareIcon className="w-7 h-7 text-black" strokeWidth={2.5} />
+            </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Judul Event</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title || ''}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+              <p className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-1">Edit Formulir</p>
+              <h1 className="font-fredoka text-3xl sm:text-4xl font-bold text-white"
+                style={{ textShadow: "3px 3px 0 rgba(0,0,0,0.15)" }}>
+                Edit Event<span style={{ color: "#33CC00" }}>.</span>
+              </h1>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
-              <textarea
-                name="description"
-                value={formData.description || ''}
-                onChange={handleChange}
-                rows="4"
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+          {/* Progress bar */}
+          <div className="mt-6 flex items-center gap-3">
+            <div className="flex-1 h-3 overflow-hidden rounded-full b-border-2 bg-white/30">
+              <div className="h-full rounded-full c-bar"
+                style={{
+                  width: `${pct}%`,
+                  background: "#33CC00",
+                  borderRight: pct > 0 && pct < 100 ? "3px solid #1a1a1a" : "none",
+                  transition: "width 0.55s cubic-bezier(.22,1,.36,1)",
+                }} />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date || ''}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Waktu</label>
-                <input
-                  type="time"
-                  name="time"
-                  value={formData.time || ''}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Lokasi</label>
-              <input
-                type="text"
-                name="location"
-                value={formData.location || ''}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Kuota</label>
-                <input
-                  type="number"
-                  name="quota"
-                  value={formData.quota || ''}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                <select
-                  name="status"
-                  value={formData.status || 'DRAFT'}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="DRAFT">Draft</option>
-                  <option value="PUBLISHED">Published</option>
-                  <option value="CLOSED">Closed</option>
-                </select>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg border-2 border-black hover:bg-green-700 transition-colors"
-              style={{ boxShadow: '4px 4px 0 #000' }}
-            >
-              Simpan Perubahan
-            </button>
-          </form>
+            <span className="text-white font-black text-xs tabular-nums"
+              style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.15)" }}>
+              {completedFields}/6
+            </span>
+          </div>
         </div>
       </div>
+
+      {/* Form card */}
+      <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 pb-12">
+        <div className="c-fadeUp bg-white b-border b-shadow overflow-hidden rounded-[2rem]">
+          <div className="p-6 sm:p-8">
+            {/* Error message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-100 b-border rounded-2xl flex items-start gap-3"
+                style={{ boxShadow: "3px 3px 0 #f87171" }}>
+                <span className="text-lg">⚠️</span>
+                <div>
+                  <p className="text-[11px] font-black text-red-400 uppercase tracking-widest">Error</p>
+                  <p className="text-sm font-bold text-red-700 mt-0.5">{error}</p>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Render fields */}
+              {(() => {
+                const elements = [];
+                let i = 0;
+                while (i < FORM_FIELDS.length) {
+                  const field = FORM_FIELDS[i];
+                  if (field.fullWidth) {
+                    elements.push(
+                      <FieldInput key={field.key} field={field} value={formData[field.key]} onChange={handleChange} />
+                    );
+                    i++;
+                  } else {
+                    const next = FORM_FIELDS[i + 1];
+                    if (next && !next.fullWidth) {
+                      elements.push(
+                        <div key={`grid-${field.key}`} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <FieldInput field={field} value={formData[field.key]} onChange={handleChange} />
+                          <FieldInput field={next} value={formData[next.key]} onChange={handleChange} />
+                        </div>
+                      );
+                      i += 2;
+                    } else {
+                      elements.push(
+                        <FieldInput key={field.key} field={field} value={formData[field.key]} onChange={handleChange} />
+                      );
+                      i++;
+                    }
+                  }
+                }
+                return elements;
+              })()}
+
+              {/* Divider */}
+              <div className="border-t-2 border-dashed border-slate-200" />
+
+              {/* Submit button */}
+              <button
+                type="submit"
+                disabled={saving}
+                className="b-btn b-border w-full py-4 rounded-2xl font-black text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50 uppercase tracking-widest"
+                style={{ background: "#2AAF15", boxShadow: "4px 4px 0 #1a1a1a" }}>
+                {saving ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Menyimpan...
+                  </>
+                ) : (
+                  <>
+                    <CheckBadgeIcon className="w-5 h-5" />
+                    Simpan Perubahan
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 sm:px-8 pb-6">
+            <div className="flex items-center gap-2.5 bg-slate-50 b-border rounded-2xl px-4 py-3">
+              <span className="text-sm">💡</span>
+              <p className="text-[11px] font-black text-slate-500">
+                Perubahan akan langsung berlaku setelah disimpan
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FieldInput({ field, value, onChange }) {
+  const { key, label, placeholder, type, icon: Icon, required, options } = field;
+
+  const inputClass = "w-full px-3.5 py-2.5 rounded-xl text-sm font-bold placeholder-slate-300 focus:outline-none transition-all b-border bg-white text-slate-900";
+  const inputStyle = { boxShadow: "3px 3px 0 #1a1a1a" };
+
+  return (
+    <div>
+      <label className="flex items-center gap-1.5 text-[11px] font-black text-slate-600 uppercase tracking-wider mb-2">
+        {Icon && <Icon className="w-3.5 h-3.5" strokeWidth={2.5} />}
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </label>
+
+      {type === "textarea" ? (
+        <textarea
+          name={key}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          rows="4"
+          required={required}
+          className={`${inputClass} resize-none`}
+          style={inputStyle}
+        />
+      ) : type === "select" ? (
+        <select
+          name={key}
+          value={value}
+          onChange={onChange}
+          className={`${inputClass} cursor-pointer`}
+          style={inputStyle}>
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type={type}
+          name={key}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          required={required}
+          min={type === "number" ? "1" : undefined}
+          className={inputClass}
+          style={inputStyle}
+        />
+      )}
     </div>
   );
 }

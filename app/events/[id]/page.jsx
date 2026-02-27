@@ -29,10 +29,25 @@ export default function ShowEventPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-          <p className="mt-4 text-gray-600">Loading event...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#FEFEFE' }}>
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
+          .font-fredoka { font-family: 'Fredoka', sans-serif; }
+          .b-border { border: 3px solid #1a1a1a; }
+          .bg-dots { background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px); background-size: 24px 24px; opacity: 0.04; pointer-events: none; }
+          @keyframes bounce1 { 0%,80%,100%{transform:scale(0)} 40%{transform:scale(1)} }
+        `}</style>
+        <div className="fixed inset-0 bg-dots" />
+        <div className="relative z-10 text-center">
+          <div className="w-20 h-20 bg-white b-border rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ boxShadow: '6px 6px 0 #1a1a1a' }}>
+            <div className="flex gap-1.5">
+              {[0, 0.15, 0.3].map((d, i) => (
+                <div key={i} className="w-3 h-3 rounded-full" style={{ background: '#2AAF15', animation: 'bounce1 1.2s infinite ease-in-out', animationDelay: `${d}s` }} />
+              ))}
+            </div>
+          </div>
+          <p className="font-fredoka text-xl font-bold text-slate-900">Memuat Event<span style={{ color: '#2AAF15' }}>...</span></p>
+          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Mohon tunggu sebentar</p>
         </div>
       </div>
     );
@@ -40,10 +55,25 @@ export default function ShowEventPage() {
 
   if (!event) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Event not found</h1>
-          <p className="text-gray-600 mt-2">The event you're looking for doesn't exist.</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#FEFEFE' }}>
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
+          .font-fredoka { font-family: 'Fredoka', sans-serif; }
+          .b-border { border: 3px solid #1a1a1a; }
+          .b-btn { transition: all 0.12s ease; }
+          .b-btn:hover { transform: translate(2px,2px); box-shadow: 0px 0px 0px #1a1a1a !important; }
+          .bg-dots { background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px); background-size: 24px 24px; opacity: 0.04; pointer-events: none; }
+        `}</style>
+        <div className="fixed inset-0 bg-dots" />
+        <div className="relative z-10 text-center">
+          <div className="w-20 h-20 bg-white b-border rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ boxShadow: '6px 6px 0 #1a1a1a' }}>
+            <span className="text-3xl">🔍</span>
+          </div>
+          <h1 className="font-fredoka text-2xl font-bold text-slate-900">Event Tidak Ditemukan</h1>
+          <p className="text-sm font-bold text-slate-400 mt-2 mb-6">Event yang kamu cari tidak tersedia atau sudah dihapus.</p>
+          <a href="/events" className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-2xl text-sm font-black uppercase tracking-wider" style={{ boxShadow: '4px 4px 0 #1a1a1a' }}>
+            ← Kembali ke Events
+          </a>
         </div>
       </div>
     );
