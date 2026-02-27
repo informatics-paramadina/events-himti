@@ -1,8 +1,9 @@
 import { prisma } from "../../../../../lib/prisma";
+import * as XLSX from 'xlsx';
 
 /**
  * GET /api/events/[id]/export
- * Export data peserta event ke format CSV
+ * Export data peserta event ke format XLSX (Excel)
  */
 export async function GET(req, { params }) {
   try {
@@ -26,20 +27,20 @@ export async function GET(req, { params }) {
       );
     }
 
-    // Generate CSV content
-    const csvContent = generateCSV(event);
+    // Generate Excel file
+    const excelBuffer = generateExcel(event);
 
-    // Return CSV response
-    return new Response(csvContent, {
+    // Return Excel response
+    return new Response(excelBuffer, {
       status: 200,
       headers: {
-        'Content-Type': 'text/csv; charset=utf-8',
-        'Content-Disposition': `attachment; filename="peserta_${sanitizeFilename(event.nama_event)}_${new Date().toISOString().split('T')[0]}.csv"`
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': `attachment; filename="peserta_${sanitizeFilename(event.nama_event)}_${new Date().toISOString().split('T')[0]}.xlsx"`
       }
     });
 
   } catch (error) {
-    console.error('Error exporting CSV:', error);
+    console.error('Error exporting Excel:', error);
     return Response.json(
       { message: "Gagal export data", error: error.message },
       { status: 500 }
@@ -48,49 +49,16 @@ export async function GET(req, { params }) {
 }
 
 /**
- * Generate CSV content from event data
+ * Generate Excel file from event data
  */
-function generateCSV(event) {
-  // CSV Headers
-  const headers = [
-    'No',
-    'Nama',
-    'Email',
-    'NIM',
-    'No WhatsApp',
-    'Jurusan',
-    'Angkatan',
-    'Role',
-    'Status',
-    'Tanggal Daftar'
-  ];
+function generateExcel(event) {
+  // Create a new workbook
+  const workbook = XLSX.utils.book_new();
 
-  // CSV Rows
-  const rows = event.participants.map((participant, index) => {
-    return [
-      index + 1,
-      escapeCSV(participant.nama),
-      escapeCSV(participant.email),
-      escapeCSV(participant.nim),
-      escapeCSV(participant.no_wa || '-'),
-      escapeCSV(participant.jurusan),
-      escapeCSV(participant.angkatan),
-      getRoleLabel(participant.role),
-      escapeCSV(participant.status),
-      new Date(participant.createdAt).toLocaleString('id-ID', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    ];
-  });
-
-  // Info header (metadata event)
-  const metadata = [
+  // Info Sheet (Metadata)
+  const infoData = [
     ['DAFTAR PESERTA EVENT'],
-    [''],
+    [],
     ['Nama Event', event.nama_event],
     ['Tanggal', event.tanggal],
     ['Waktu', `${event.jam_mulai} - ${event.jam_berakhir} WIB`],
@@ -98,42 +66,82 @@ function generateCSV(event) {
     ['Kapasitas', event.kapasitas || 'Tidak terbatas'],
     ['Total Peserta', event.participants.length],
     ['Tanggal Export', new Date().toLocaleString('id-ID')],
-    [''],
-    []
   ];
 
-  // Combine metadata + headers + rows
-  const allRows = [
-    ...metadata,
-    headers,
-    ...rows
+  const infoSheet = XLSX.utils.aoa_to_sheet(infoData);
+  
+  // Set column widths for info sheet
+  infoSheet['!cols'] = [
+    { wch: 20 },
+    { wch: 50 }
   ];
 
-  // Convert to CSV string with BOM for Excel compatibility
-  const BOM = '\uFEFF';
-  const csvString = allRows
-    .map(row => row.join(','))
-    .join('\n');
+  // Add info sheet to workbook
+  XLSX.utils.book_append_sheet(workbook, infoSheet, 'Info Event');
 
-  return BOM + csvString;
-}
+  // Participants Sheet
+  const participantsData = [
+    // Headers
+    [
+      'No',
+      'Nama',
+      'Email',
+      'NIM',
+      'No WhatsApp',
+      'Jurusan',
+      'Angkatan',
+      'Role',
+      'Status',
+      'Tanggal Daftar'
+    ],
+    // Data rows
+    ...event.participants.map((participant, index) => [
+      index + 1,
+      participant.nama,
+      participant.email,
+      participant.nim,
+      participant.no_wa || '-',
+      participant.jurusan,
+      participant.angkatan,
+      getRoleLabel(participant.role),
+      participant.status,
+      new Date(participant.createdAt).toLocaleString('id-ID', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    ])
+  ];
 
-/**
- * Escape CSV special characters
- */
-function escapeCSV(value) {
-  if (value === null || value === undefined) {
-    return '';
-  }
-  
-  const stringValue = String(value);
-  
-  // If contains comma, newline, or quotes, wrap in quotes and escape internal quotes
-  if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
-    return `"${stringValue.replace(/"/g, '""')}"`;
-  }
-  
-  return stringValue;
+  const participantsSheet = XLSX.utils.aoa_to_sheet(participantsData);
+
+  // Set column widths for participants sheet
+  participantsSheet['!cols'] = [
+    { wch: 5 },   // No
+    { wch: 25 },  // Nama
+    { wch: 30 },  // Email
+    { wch: 15 },  // NIM
+    { wch: 15 },  // No WhatsApp
+    { wch: 30 },  // Jurusan
+    { wch: 10 },  // Angkatan
+    { wch: 15 },  // Role
+    { wch: 12 },  // Status
+    { wch: 18 }   // Tanggal Daftar
+  ];
+
+  // Add participants sheet to workbook
+  XLSX.utils.book_append_sheet(workbook, participantsSheet, 'Data Peserta');
+
+  // Generate buffer
+  const excelBuffer = XLSX.write(workbook, { 
+    type: 'buffer', 
+    bookType: 'xlsx',
+    cellStyles: true
+  });
+
+  return excelBuffer;
 }
 
 /**

@@ -53,7 +53,7 @@ export default function Dashboard() {
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `peserta_${eventName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            link.download = `peserta_${eventName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
             document.body.appendChild(link);
             link.click();
             
@@ -472,10 +472,10 @@ export default function Dashboard() {
                                                                 onClick={() => handleExportCSV(event.id, event.nama_event)}
                                                                 disabled={exportingId === event.id || event.participantCount === 0}
                                                                 className="px-3 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
-                                                                title={event.participantCount === 0 ? 'Belum ada peserta' : 'Export data peserta ke CSV'}
+                                                                title={event.participantCount === 0 ? 'Belum ada peserta' : 'Export data peserta ke Excel'}
                                                             >
                                                                 <ArrowDownTrayIcon className="h-4 w-4" />
-                                                                {exportingId === event.id ? 'Exporting...' : 'Export CSV'}
+                                                                {exportingId === event.id ? 'Exporting...' : 'Export Excel'}
                                                             </button>
                                                             <button
                                                                 onClick={() => openEditModal(event)}
