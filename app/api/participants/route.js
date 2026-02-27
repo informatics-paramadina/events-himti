@@ -1,4 +1,5 @@
 import { prisma } from "../../../lib/prisma";
+import { sendConfirmationEmail } from "../../../lib/mail";
 
 /* =======================
    GET → ambil semua peserta
@@ -98,6 +99,14 @@ export async function POST(req) {
       },
       include: { event: true },
     });
+
+    /* ===== KIRIM EMAIL KONFIRMASI ===== */
+    try {
+      await sendConfirmationEmail(email, participant, participant.event);
+    } catch (emailError) {
+      console.error('Warning: Email confirmation failed, but registration successful:', emailError.message);
+      // Tidak gagalkan registrasi jika email gagal terkirim
+    }
 
     return Response.json(participant, { status: 201 });
   } catch (err) {
