@@ -47,12 +47,13 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
     const [step, setStep] = useState('detail');
     const [formData, setFormData] = useState({
         nama: '',
-        nim: '',
         email: '',
         no_wa: '',
-        jurusan: '',
+        role: 'MAHASISWA',
+        divisi: '',
+        instansi: '',
         angkatan: '',
-        role: 'PESERTA',
+        prodi: '',
     });
     const [errors, setErrors] = useState({});
     const [processing, setProcessing] = useState(false);
@@ -79,9 +80,12 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         // Validate required fields
         const newErrors = {};
         if (!formData.nama) newErrors.nama = 'Nama lengkap harus diisi';
-        if (!formData.nim) newErrors.nim = 'NIM harus diisi';
         if (!formData.email) newErrors.email = 'Email harus diisi';
         if (!formData.no_wa) newErrors.no_wa = 'WhatsApp harus diisi';
+        if (formData.role === 'PANITIA' && !formData.divisi) newErrors.divisi = 'Divisi harus diisi';
+        if (formData.role === 'PESERTA' && !formData.instansi) newErrors.instansi = 'Instansi harus diisi';
+        if (formData.role === 'PENGURUS_HIMTI' && !formData.angkatan) newErrors.angkatan = 'Angkatan harus diisi';
+        if ((formData.role === 'PENGURUS_HIMTI' || formData.role === 'MAHASISWA') && !formData.prodi) newErrors.prodi = 'Program Studi harus diisi';
         
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -97,12 +101,14 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                 },
                 body: JSON.stringify({
                     nama: formData.nama,
-                    nim: formData.nim,
+                    nim: 'N/A',
                     email: formData.email,
                     no_wa: formData.no_wa,
-                    jurusan: formData.jurusan || 'Tidak disebutkan',
+                    jurusan: formData.role === 'PANITIA' ? formData.divisi : 
+                            (formData.role === 'PESERTA' ? formData.instansi : 
+                            (formData.role === 'PENGURUS_HIMTI' || formData.role === 'MAHASISWA' ? formData.prodi : 'Tidak disebutkan')),
                     angkatan: formData.angkatan || 'Tidak disebutkan',
-                    role: formData.role || 'PESERTA',
+                    role: formData.role || 'MAHASISWA',
                     status: 'terdaftar',
                     eventId: eventId,
                 }),
@@ -116,13 +122,13 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
             setStep('success');
             setFormData({
                 nama: '',
-                nim: '',
                 email: '',
                 no_wa: '',
-                jurusan: '',
+                role: 'MAHASISWA',
+                divisi: '',
+                instansi: '',
                 angkatan: '',
-                role: 'PESERTA',
-                angkatan: '',
+                prodi: '',
             });
         } catch (error) {
             setErrors({ submit: error.message });
@@ -131,19 +137,86 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         }
     };
 
-    const formFields = [
-        { key: 'nama',     label: 'Nama Lengkap', placeholder: 'Nama lengkap kamu', type: 'text',  required: true  },
-        { key: 'nim',      label: 'NIM',          placeholder: '2101001234',         type: 'text',  required: true  },
-        { key: 'email',    label: 'Email',        placeholder: 'nama@email.com',     type: 'email', required: true  },
-        { key: 'no_wa',    label: 'WhatsApp',     placeholder: '081234567890',       type: 'tel',   required: true  },
-        { key: 'jurusan',  label: 'Jurusan',      placeholder: 'Teknik Informatika', type: 'text',  required: false },
-        { key: 'angkatan', label: 'Angkatan',     placeholder: '2021',               type: 'text',  required: false },
-        { key: 'role',     label: 'Mendaftar Sebagai', placeholder: '',                type: 'select', required: true, options: [
-            { value: 'PESERTA', label: '🎓 Peserta' },
-            { value: 'DOSEN', label: '👨‍🏫 Dosen' },
-            { value: 'PANITIA', label: '👔 Panitia' },
-        ]},
-    ];
+    const getFormFields = () => {
+        const baseFields = [
+            { key: 'nama',     label: 'Nama Lengkap', placeholder: 'Nama lengkap kamu', type: 'text',  required: true  },
+            { key: 'email',    label: 'Email',        placeholder: 'nama@email.com',     type: 'email', required: true  },
+            { key: 'no_wa',    label: 'WhatsApp',     placeholder: '081234567890',       type: 'tel',   required: true  },
+        ];
+        
+        const roleField = { 
+            key: 'role',     
+            label: 'Mendaftar Sebagai', 
+            placeholder: '',
+            type: 'select', 
+            required: true, 
+            options: [
+                { value: 'MAHASISWA', label: '🎓 Mahasiswa' },
+                { value: 'PENGURUS_HIMTI', label: '👔 Pengurus HIMTI' },
+                { value: 'PESERTA', label: '👤 Peserta' },
+                { value: 'DOSEN', label: '👨‍🏫 Dosen' },
+                { value: 'PANITIA', label: '🎯 Panitia' },
+            ]
+        };
+        
+        const conditionalFields = [];
+        
+        // Program Studi untuk Pengurus HIMTI dan Mahasiswa
+        if (formData.role === 'PENGURUS_HIMTI' || formData.role === 'MAHASISWA') {
+            conditionalFields.push({
+                key: 'prodi',
+                label: 'Program Studi',
+                placeholder: '',
+                type: 'select',
+                required: true,
+                options: [
+                    { value: 'Teknik Informatika', label: 'Teknik Informatika' },
+                    { value: 'Desain Komunikasi Visual', label: 'Desain Komunikasi Visual' },
+                    { value: 'Desain Produk', label: 'Desain Produk' },
+                    { value: 'Manajemen dan Bisnis', label: 'Manajemen dan Bisnis' },
+                    { value: 'Falsafah dan Agama', label: 'Falsafah dan Agama' },
+                    { value: 'Hubungan Internasional', label: 'Hubungan Internasional' },
+                    { value: 'Ilmu Komunikasi', label: 'Ilmu Komunikasi' },
+                    { value: 'Psikologi', label: 'Psikologi' },
+                ]
+            });
+        }
+        
+        // Angkatan untuk Pengurus HIMTI
+        if (formData.role === 'PENGURUS_HIMTI') {
+            conditionalFields.push({ 
+                key: 'angkatan', 
+                label: 'Angkatan', 
+                placeholder: 'Contoh: 2023', 
+                type: 'text', 
+                required: true 
+            });
+        }
+        
+        // Divisi untuk Panitia
+        if (formData.role === 'PANITIA') {
+            conditionalFields.push({ 
+                key: 'divisi', 
+                label: 'Divisi', 
+                placeholder: 'Contoh: Acara, Humas, dll', 
+                type: 'text', 
+                required: true 
+            });
+        } 
+        
+        // Instansi untuk Peserta
+        if (formData.role === 'PESERTA') {
+            conditionalFields.push({ 
+                key: 'instansi', 
+                label: 'Instansi', 
+                placeholder: 'Nama instansi/universitas', 
+                type: 'text', 
+                required: true 
+            });
+        }
+        
+        return [...baseFields, roleField, ...conditionalFields];
+    };
 
     /* render fn, not component  avoids input remount on typing */
     const renderSidebar = () => {
@@ -178,13 +251,16 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                         {[
                             { label: 'Tanggal', val: eventDate.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }) },
                             { label: 'Waktu',  val: `${event.jam_mulai}-${event.jam_berakhir}` },
-                            { label: 'Lokasi',  val: event.lokasi, trunc: true },
-                        ].map(({ label, val, trunc }) => (
+                        ].map(({ label, val }) => (
                             <div key={label} className="p-3 bg-slate-50 b-border rounded-xl">
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{label}</p>
-                                <p className={`text-xs font-black text-slate-800 ${trunc ? 'truncate' : ''}`}>{val}</p>
+                                <p className="text-xs font-black text-slate-800">{val}</p>
                             </div>
                         ))}
+                    </div>
+                    <div className="p-3 bg-slate-50 b-border rounded-xl">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Lokasi</p>
+                        <p className="text-xs font-black text-slate-800 truncate">{event.lokasi}</p>
                     </div>
                     <div className="flex items-center gap-2.5 bg-green-50 b-border rounded-2xl px-4 py-3">
                         <span></span>
@@ -217,7 +293,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                 <form onSubmit={handleRegister} className="p-5">
                     {errors.submit && <div className="mb-4 p-3 bg-red-100 border-2 border-red-500 rounded-lg text-red-700 text-sm font-bold">{errors.submit}</div>}
                     <div className="space-y-3">
-                        {formFields.map(({ key, label, placeholder, type, required, options }) => (
+                        {getFormFields().map(({ key, label, placeholder, type, required, options }) => (
                             <div key={key}>
                                 <label className="block text-[11px] font-black text-slate-600 uppercase tracking-wider mb-1.5">
                                     {label}{required && <span className="text-red-500 ml-0.5">*</span>}
@@ -364,19 +440,6 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                     </Link>
 
                     <div className="mt-10">
-                        <div className="flex flex-wrap items-center gap-2 mb-5">
-                            <span className="b-border text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-wider"
-                                style={{ background: status.color, color: status.textColor, boxShadow: '2px 2px 0 #1a1a1a' }}>
-                                {status.label}
-                            </span>
-                            {isUpcoming && (
-                                <span className="b-border text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-wider bg-white text-black"
-                                    style={{ boxShadow: '2px 2px 0 #1a1a1a' }}>
-                                     Segera Hadir
-                                </span>
-                            )}
-                        </div>
-
                         <h1 className="font-fredoka font-bold text-white mb-6 leading-none max-w-3xl"
                             style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', textShadow: '4px 4px 0 rgba(0,0,0,0.25)' }}>
                             {event.nama_event}
@@ -422,25 +485,66 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                                 <div className="w-3 h-6 rounded-sm" style={{ background: acc.bar }} />
                                 <h2 className="font-fredoka text-xl font-bold text-slate-900 uppercase tracking-wide">Informasi Event</h2>
                             </div>
-                            <div className="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {[
-                                    { icon: '', label: 'Tanggal', val: eventDate.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) },
-                                    { icon: '', label: 'Waktu', val: `${event.jam_mulai} - ${event.jam_berakhir} WIB` },
-                                    { icon: '', label: 'Lokasi',          val: event.lokasi },
-                                    { icon: '', label: 'Daftar Ulang',    val: `${filled} dari ${event.kapasitas} telah mendaftar` },
-                                    { icon: '', label: 'Status Waktu',    val: isUpcoming ? 'Segera Dimulai' : 'Sudah Berlangsung' },
-                                ].map(({ icon, label, val }) => (
-                                    <div key={label} className="flex items-start gap-3 p-3.5 b-border rounded-2xl bg-slate-50">
+                            <div className="px-6 py-5 space-y-3">
+                                {/* Tanggal - Full Width */}
+                                <div className="flex items-start gap-3 p-3.5 b-border rounded-2xl bg-slate-50">
+                                    <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 b-border rounded-xl text-xl"
+                                        style={{ background: acc.tag, boxShadow: '2px 2px 0 #1a1a1a' }}>
+                                        📅
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal</p>
+                                        <p className="text-sm font-black text-slate-900 mt-0.5 leading-snug">{eventDate.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}</p>
+                                    </div>
+                                </div>
+                                
+                                {/* Jam Mulai dan Jam Berakhir - Flex */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="flex items-start gap-3 p-3.5 b-border rounded-2xl bg-slate-50">
                                         <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 b-border rounded-xl text-xl"
                                             style={{ background: acc.tag, boxShadow: '2px 2px 0 #1a1a1a' }}>
-                                            {icon}
+                                            🕐
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</p>
-                                            <p className="text-sm font-black text-slate-900 mt-0.5 leading-snug">{val}</p>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jam Mulai</p>
+                                            <p className="text-sm font-black text-slate-900 mt-0.5 leading-snug">{event.jam_mulai}</p>
                                         </div>
                                     </div>
-                                ))}
+                                    <div className="flex items-start gap-3 p-3.5 b-border rounded-2xl bg-slate-50">
+                                        <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 b-border rounded-xl text-xl"
+                                            style={{ background: acc.tag, boxShadow: '2px 2px 0 #1a1a1a' }}>
+                                            🕐
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jam Berakhir</p>
+                                            <p className="text-sm font-black text-slate-900 mt-0.5 leading-snug">{event.jam_berakhir}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Lokasi - Full Width */}
+                                <div className="flex items-start gap-3 p-3.5 b-border rounded-2xl bg-slate-50">
+                                    <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 b-border rounded-xl text-xl"
+                                        style={{ background: acc.tag, boxShadow: '2px 2px 0 #1a1a1a' }}>
+                                        📍
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Lokasi</p>
+                                        <p className="text-sm font-black text-slate-900 mt-0.5 leading-snug">{event.lokasi}</p>
+                                    </div>
+                                </div>
+                                
+                                {/* Jumlah Pendaftar - Full Width */}
+                                <div className="flex items-start gap-3 p-3.5 b-border rounded-2xl bg-slate-50">
+                                    <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 b-border rounded-xl text-xl"
+                                        style={{ background: acc.tag, boxShadow: '2px 2px 0 #1a1a1a' }}>
+                                        👥
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jumlah Pendaftar</p>
+                                        <p className="text-sm font-black text-slate-900 mt-0.5 leading-snug">{filled} dari {event.kapasitas} telah mendaftar</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -504,9 +608,28 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                     <div className="max-w-7xl mx-auto px-6 flex flex-col items-center text-center">
                         <div className="flex items-center gap-2.5 mb-3">
                             <div className="w-10 h-10 bg-green-500 b-border rounded-xl flex items-center justify-center" style={{ boxShadow: '3px 3px 0 #1a1a1a' }}>
-                                <span className="text-xl"></span>
+                                <BoltIcon className="w-5 h-5 text-black" strokeWidth={3} />
                             </div>
                             <span className="font-fredoka text-2xl font-bold tracking-tight text-black">HIMTI Events</span>
+                        </div>
+                        <p className="text-slate-400 font-bold text-sm mb-4">Platform terpadu kegiatan HIMTI.</p>
+                        <div className="flex items-center gap-4 mb-4">
+                            <a href="https://www.instagram.com/himtiparamadina/" target="_blank" rel="noopener noreferrer"
+                                className="flex items-center justify-center w-10 h-10 transition-colors bg-white rounded-full cursor-pointer text-pink-600 b-border-2 hover:bg-pink-100"
+                                style={{ boxShadow: '2px 2px 0 #1a1a1a' }}
+                                title="Instagram HIMTI">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                    <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+                                </svg>
+                            </a>
+                            <a href="https://www.tiktok.com/@himti.paramadina" target="_blank" rel="noopener noreferrer"
+                                className="flex items-center justify-center w-10 h-10 transition-colors bg-white rounded-full cursor-pointer text-black b-border-2 hover:bg-gray-100"
+                                style={{ boxShadow: '2px 2px 0 #1a1a1a' }}
+                                title="TikTok HIMTI">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                                </svg>
+                            </a>
                         </div>
                         <p className="text-slate-900 font-black text-xs uppercase tracking-widest">&copy; 2026 HIMTI Events. Satu Platform, Ribuan Kesempatan!</p>
                     </div>

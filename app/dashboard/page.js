@@ -13,9 +13,14 @@ import {
     ArrowTrendingUpIcon,
     UserGroupIcon,
     ArrowDownTrayIcon,
+    ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 
 export default function Dashboard() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [stats, setStats] = useState({
         totalEvents: 0,
         totalParticipants: 0,
@@ -33,8 +38,46 @@ export default function Dashboard() {
     const [exportingId, setExportingId] = useState(null);
 
     useEffect(() => {
-        fetchDashboardData();
+        // Check if already authenticated in session
+        const authenticated = sessionStorage.getItem('dashboard_authenticated');
+        if (authenticated === 'true') {
+            setIsAuthenticated(true);
+            fetchDashboardData();
+        } else {
+            setShowPasswordModal(true);
+            setLoading(false);
+        }
     }, []);
+
+    const handlePasswordSubmit = (e) => {
+        e.preventDefault();
+        const correctPassword = 'ristekhimtikece';
+        
+        if (passwordInput === correctPassword) {
+            sessionStorage.setItem('dashboard_authenticated', 'true');
+            setIsAuthenticated(true);
+            setShowPasswordModal(false);
+            setPasswordError('');
+            fetchDashboardData();
+        } else {
+            setPasswordError('Password salah! Silakan coba lagi.');
+            setPasswordInput('');
+        }
+    };
+
+    const handleLogout = () => {
+        sessionStorage.removeItem('dashboard_authenticated');
+        setIsAuthenticated(false);
+        setShowPasswordModal(true);
+        setPasswordInput('');
+        setPasswordError('');
+    };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchDashboardData();
+        }
+    }, [isAuthenticated]);
 
     async function handleExportCSV(eventId, eventName) {
         try {
@@ -256,6 +299,60 @@ export default function Dashboard() {
         }
     }
 
+    if (showPasswordModal) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl shadow-xl border-4 border-black max-w-md w-full p-8">
+                    <div className="text-center mb-6">
+                        <div className="w-16 h-16 bg-green-500 rounded-2xl border-4 border-black mx-auto mb-4 flex items-center justify-center shadow-[4px_4px_0_#000]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-8 h-8 text-white">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                        </div>
+                        <h2 className="text-2xl font-black text-gray-900 mb-2">Dashboard Protected</h2>
+                        <p className="text-sm text-gray-600 font-bold">Masukkan password untuk mengakses dashboard</p>
+                    </div>
+                    
+                    <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-xs font-black text-gray-700 uppercase tracking-wider mb-2">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                value={passwordInput}
+                                onChange={(e) => setPasswordInput(e.target.value)}
+                                placeholder="Masukkan password..."
+                                className="w-full px-4 py-3 border-4 border-black rounded-xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-green-300 shadow-[4px_4px_0_#000]"
+                                autoFocus
+                            />
+                        </div>
+                        
+                        {passwordError && (
+                            <div className="bg-red-100 border-4 border-red-500 rounded-xl p-3">
+                                <p className="text-sm font-black text-red-700">{passwordError}</p>
+                            </div>
+                        )}
+                        
+                        <button
+                            type="submit"
+                            className="w-full bg-green-500 hover:bg-green-600 text-white font-black py-3 px-4 rounded-xl border-4 border-black shadow-[4px_4px_0_#000] hover:shadow-[6px_6px_0_#000] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all uppercase tracking-wider"
+                        >
+                            Masuk Dashboard
+                        </button>
+                        
+                        <Link 
+                            href="/events"
+                            className="block text-center text-sm font-bold text-gray-600 hover:text-green-600 mt-4"
+                        >
+                            ← Kembali ke Events
+                        </Link>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -300,6 +397,13 @@ export default function Dashboard() {
                                 <PlusIcon className="h-5 w-5 mr-2" />
                                 Buat Event Baru
                             </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="inline-flex items-center px-4 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 bg-white hover:bg-red-50 transition"
+                            >
+                                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />
+                                Logout
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -307,7 +411,7 @@ export default function Dashboard() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition">
                         <div className="flex items-center justify-between">
                             <div>
@@ -343,19 +447,6 @@ export default function Dashboard() {
                             </div>
                             <div className="p-3 bg-purple-100 rounded-lg">
                                 <CheckCircleIcon className="h-8 w-8 text-purple-600" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-gray-600">Upcoming Events</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.upcomingEvents}</p>
-                                <p className="text-xs text-gray-500 mt-1">Event mendatang</p>
-                            </div>
-                            <div className="p-3 bg-orange-100 rounded-lg">
-                                <ArrowTrendingUpIcon className="h-8 w-8 text-orange-600" />
                             </div>
                         </div>
                     </div>
@@ -410,11 +501,6 @@ export default function Dashboard() {
                                                             >
                                                                 {event.nama_event}
                                                             </Link>
-                                                            {isUpcoming && (
-                                                                <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                                                                    Upcoming
-                                                                </span>
-                                                            )}
                                                         </div>
                                                         
                                                         {event.deskripsi && (
@@ -588,26 +674,29 @@ export default function Dashboard() {
                         </div>
 
                         {/* Quick Stats */}
-                        <div className="mt-6 bg-gradient-to-br from-green-500 to-green-700 rounded-xl shadow-sm p-6 text-white">
-                            <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+                        <div className="mt-6 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                            <h3 className="text-lg font-semibold mb-4 text-gray-900">Quick Actions</h3>
                             <div className="space-y-3">
                                 <Link
                                     href="/events/create"
-                                    className="block w-full px-4 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg text-sm font-medium transition text-center"
+                                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-green-500 hover:bg-green-600 rounded-lg text-sm font-bold transition text-white shadow-sm"
                                 >
-                                    + Buat Event Baru
+                                    <PlusIcon className="h-5 w-5" />
+                                    Buat Event Baru
                                 </Link>
                                 <Link
                                     href="/events"
-                                    className="block w-full px-4 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg text-sm font-medium transition text-center"
+                                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-sm font-bold transition text-white shadow-sm"
                                 >
-                                    📅 Kelola Events
+                                    <CalendarIcon className="h-5 w-5" />
+                                    Kelola Events
                                 </Link>
                                 <Link
                                     href="/participants"
-                                    className="block w-full px-4 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg text-sm font-medium transition text-center"
+                                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg text-sm font-bold transition text-white shadow-sm"
                                 >
-                                    👥 Kelola Peserta
+                                    <UsersIcon className="h-5 w-5" />
+                                    Kelola Peserta
                                 </Link>
                             </div>
                         </div>
