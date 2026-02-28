@@ -59,13 +59,37 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
     const [errors, setErrors] = useState({});
     const [processing, setProcessing] = useState(false);
     
+    // Guard: return early if event is not available
+    if (!event) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                <div className="text-center">
+                    <p className="text-gray-600 font-semibold">Event tidak ditemukan</p>
+                </div>
+            </div>
+        );
+    }
+    
     const isAuthenticated = !!auth.user;
     const isAdmin    = auth.user?.role === 'admin';
     const eventDate  = new Date(event.tanggal);
     const isUpcoming = eventDate > new Date();
     const filled     = event._count?.participants || 0;
     const fillPct    = Math.min(Math.round((filled / event.kapasitas) * 100), 100);
-    const acc        = ACCENTS[(event.id || 0) % ACCENTS.length];
+    
+    // Hash UUID string to consistent number for accent selection
+    const hashUUID = (uuid) => {
+        if (!uuid) return 0;
+        let hash = 0;
+        for (let i = 0; i < uuid.length; i++) {
+            const char = uuid.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return Math.abs(hash);
+    };
+    
+    const acc        = ACCENTS[hashUUID(event.id) % ACCENTS.length];
     const status     = STATUS_CFG[event.status] || STATUS_CFG.DRAFT;
 
     const handleInputChange = (key, value) => {

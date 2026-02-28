@@ -6,16 +6,16 @@ import { useState, useEffect } from 'react';
 
 export default function ShowEventPage() {
   const params = useParams();
-  const eventId = parseInt(params.id);
+  const eventId = params.id;  // UUID string, no parseInt
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchEvent() {
       try {
-        const res = await fetch('/api/events');
-        const events = await res.json();
-        const foundEvent = events.find(e => e.id === eventId);
+        const res = await fetch(`/api/events/${eventId}`);
+        if (!res.ok) throw new Error('Event tidak ditemukan');
+        const foundEvent = await res.json();
         setEvent(foundEvent || null);
       } catch (error) {
         console.error('Error fetching event:', error);

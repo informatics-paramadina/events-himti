@@ -60,10 +60,9 @@ export default function EditEventPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await fetch(`/api/events?id=${eventId}`);
+        const res = await fetch(`/api/events/${eventId}`);
         if (!res.ok) throw new Error('Event tidak ditemukan');
-        const data = await res.json();
-        const event = Array.isArray(data) ? data.find(e => e.id == eventId) : data;
+        const event = await res.json();
         if (!event) throw new Error('Event tidak ditemukan');
         setFormData({
           nama_event: event.nama_event || '',

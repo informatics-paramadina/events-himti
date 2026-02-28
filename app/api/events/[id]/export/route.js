@@ -8,11 +8,10 @@ import * as XLSX from 'xlsx';
 export async function GET(req, { params }) {
   try {
     const { id } = await params;
-    const eventId = parseInt(id);
 
     // Ambil data event beserta peserta
     const event = await prisma.event.findUnique({
-      where: { id: eventId },
+      where: { id },
       include: {
         participants: {
           orderBy: { createdAt: 'asc' }

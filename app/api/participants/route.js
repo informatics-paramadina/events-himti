@@ -40,8 +40,17 @@ export async function POST(req) {
       eventId,
     } = body;
 
+    // Validasi eventId adalah UUID yang valid (generic UUID format)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(eventId)) {
+      return Response.json(
+        { message: "Event ID tidak valid" },
+        { status: 400 }
+      );
+    }
+
     /* ===== VALIDASI ===== */
-    if (!nama || !email || !nim || !eventId) {
+    if (!nama || !email || !eventId) {
       return Response.json(
         { message: "Data belum lengkap" },
         { status: 400 }
@@ -49,8 +58,14 @@ export async function POST(req) {
     }
 
     /* ===== CEK DOUBLE ===== */
+    // Jika NIM ada (bukan "N/A"), check duplikat berdasarkan NIM
+    // Jika NIM "N/A" (PESERTA), check duplikat berdasarkan email
+    const checkDuplicateFilter = nim && nim !== 'N/A' 
+      ? { nim, eventId }
+      : { email, eventId };
+    
     const existing = await prisma.participant.findFirst({
-      where: { nim, eventId },
+      where: checkDuplicateFilter,
     });
 
     if (existing) {

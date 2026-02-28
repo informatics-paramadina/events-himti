@@ -4,7 +4,7 @@ export async function GET(req, { params }) {
   try {
     const { id } = await params;
     const event = await prisma.event.findUnique({
-      where: { id: parseInt(id) },
+      where: { id },
       include: {
         participants: true,
       },
@@ -33,7 +33,7 @@ export async function PUT(req, { params }) {
     const body = await req.json();
 
     const event = await prisma.event.update({
-      where: { id: parseInt(id) },
+      where: { id },
       data: {
         nama_event: body.nama_event,
         deskripsi: body.deskripsi,
@@ -64,12 +64,12 @@ export async function DELETE(req, { params }) {
     
     // Delete all participants for this event first
     await prisma.participant.deleteMany({
-      where: { eventId: parseInt(id) },
+      where: { eventId: id },
     });
     
     // Then delete the event
     await prisma.event.delete({
-      where: { id: parseInt(id) },
+      where: { id },
     });
 
     return Response.json({ message: 'Event berhasil dihapus' });

@@ -84,7 +84,7 @@ export default function ParticipantsPage() {
 
         // Filter by event
         if (eventFilter !== 'all') {
-            filtered = filtered.filter(p => p.eventId === parseInt(eventFilter));
+            filtered = filtered.filter(p => p.eventId === eventFilter);
         }
 
         setFilteredParticipants(filtered);
