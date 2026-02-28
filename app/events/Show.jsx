@@ -50,6 +50,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         email: '',
         no_wa: '',
         role: 'MAHASISWA',
+        nim: '',
         divisi: '',
         instansi: '',
         angkatan: '',
@@ -82,9 +83,10 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         if (!formData.nama) newErrors.nama = 'Nama lengkap harus diisi';
         if (!formData.email) newErrors.email = 'Email harus diisi';
         if (!formData.no_wa) newErrors.no_wa = 'WhatsApp harus diisi';
+        if ((formData.role === 'MAHASISWA' || formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') && !formData.nim) newErrors.nim = 'NIM harus diisi';
         if (formData.role === 'PANITIA' && !formData.divisi) newErrors.divisi = 'Divisi harus diisi';
         if (formData.role === 'PESERTA' && !formData.instansi) newErrors.instansi = 'Instansi harus diisi';
-        if (formData.role === 'PENGURUS_HIMTI' && !formData.angkatan) newErrors.angkatan = 'Angkatan harus diisi';
+        if ((formData.role === 'MAHASISWA' || formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') && !formData.angkatan) newErrors.angkatan = 'Angkatan harus diisi';
         if ((formData.role === 'PENGURUS_HIMTI' || formData.role === 'MAHASISWA') && !formData.prodi) newErrors.prodi = 'Program Studi harus diisi';
         
         if (Object.keys(newErrors).length > 0) {
@@ -101,7 +103,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                 },
                 body: JSON.stringify({
                     nama: formData.nama,
-                    nim: 'N/A',
+                    nim: formData.nim || 'N/A',
                     email: formData.email,
                     no_wa: formData.no_wa,
                     jurusan: formData.role === 'PANITIA' ? formData.divisi : 
@@ -125,6 +127,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                 email: '',
                 no_wa: '',
                 role: 'MAHASISWA',
+                nim: '',
                 divisi: '',
                 instansi: '',
                 angkatan: '',
@@ -161,6 +164,17 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         
         const conditionalFields = [];
         
+        // NIM untuk Mahasiswa, Panitia, dan Pengurus HIMTI
+        if (formData.role === 'MAHASISWA' || formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') {
+            conditionalFields.push({ 
+                key: 'nim', 
+                label: 'NIM', 
+                placeholder: 'Nomor Induk Mahasiswa', 
+                type: 'text', 
+                required: true 
+            });
+        }
+        
         // Program Studi untuk Pengurus HIMTI dan Mahasiswa
         if (formData.role === 'PENGURUS_HIMTI' || formData.role === 'MAHASISWA') {
             conditionalFields.push({
@@ -182,17 +196,6 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
             });
         }
         
-        // Angkatan untuk Pengurus HIMTI
-        if (formData.role === 'PENGURUS_HIMTI') {
-            conditionalFields.push({ 
-                key: 'angkatan', 
-                label: 'Angkatan', 
-                placeholder: 'Contoh: 2023', 
-                type: 'text', 
-                required: true 
-            });
-        }
-        
         // Divisi untuk Panitia
         if (formData.role === 'PANITIA') {
             conditionalFields.push({ 
@@ -202,7 +205,18 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                 type: 'text', 
                 required: true 
             });
-        } 
+        }
+        
+        // Angkatan untuk Mahasiswa, Panitia, dan Pengurus HIMTI
+        if (formData.role === 'MAHASISWA' || formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') {
+            conditionalFields.push({ 
+                key: 'angkatan', 
+                label: 'Angkatan', 
+                placeholder: 'Contoh: 2023', 
+                type: 'text', 
+                required: true 
+            });
+        }
         
         // Instansi untuk Peserta
         if (formData.role === 'PESERTA') {
