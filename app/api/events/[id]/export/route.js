@@ -51,20 +51,20 @@ export async function GET(req, { params }) {
  * Generate Excel file from event data
  */
 function generateExcel(event) {
-  // Create a new workbook
   const workbook = XLSX.utils.book_new();
+  const exportDate = new Date();
+  const eventDate = formatDate(event.tanggal);
 
-  // Info Sheet (Metadata)
   const infoData = [
     ['DAFTAR PESERTA EVENT'],
     [],
-    ['Nama Event', event.nama_event],
-    ['Tanggal', event.tanggal],
-    ['Waktu', `${event.jam_mulai} - ${event.jam_berakhir} WIB`],
-    ['Lokasi', event.lokasi],
-    ['Kapasitas', event.kapasitas || 'Tidak terbatas'],
+    ['Nama Event', normalizeCell(event.nama_event)],
+    ['Tanggal', eventDate],
+    ['Waktu', normalizeCell(`${event.jam_mulai} - ${event.jam_berakhir} WIB`)],
+    ['Lokasi', normalizeCell(event.lokasi)],
+    ['Kapasitas', event.kapasitas ?? 'Tidak terbatas'],
     ['Total Peserta', event.participants.length],
-    ['Tanggal Export', new Date().toLocaleString('id-ID')],
+    ['Tanggal Export', exportDate.toLocaleString('id-ID')],
   ];
 
   const infoSheet = XLSX.utils.aoa_to_sheet(infoData);
@@ -78,9 +78,7 @@ function generateExcel(event) {
   // Add info sheet to workbook
   XLSX.utils.book_append_sheet(workbook, infoSheet, 'Info Event');
 
-  // Participants Sheet
   const participantsData = [
-    // Headers
     [
       'No',
       'Nama',
@@ -88,52 +86,58 @@ function generateExcel(event) {
       'NIM',
       'No WhatsApp',
       'Jurusan',
+      'Instansi',
+      'Divisi',
       'Angkatan',
       'Role',
       'Status',
       'Tanggal Daftar'
     ],
-    // Data rows
-    ...event.participants.map((participant, index) => [
-      index + 1,
-      participant.nama,
-      participant.email,
-      participant.nim,
-      participant.no_wa || '-',
-      participant.jurusan,
-      participant.angkatan,
-      getRoleLabel(participant.role),
-      participant.status,
-      new Date(participant.createdAt).toLocaleString('id-ID', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    ])
+    ...event.participants.map((participant, index) => {
+      const { jurusan, instansi, divisi } = mapParticipantFields(participant);
+
+      return [
+        index + 1,
+        normalizeCell(participant.nama),
+        normalizeCell(participant.email),
+        normalizeCell(participant.nim),
+        normalizeCell(participant.no_wa),
+        normalizeCell(jurusan),
+        normalizeCell(instansi),
+        normalizeCell(divisi),
+        normalizeCell(participant.angkatan),
+        getRoleLabel(participant.role),
+        normalizeCell(participant.status),
+        new Date(participant.createdAt).toLocaleString('id-ID', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      ];
+    })
   ];
 
   const participantsSheet = XLSX.utils.aoa_to_sheet(participantsData);
 
-  // Set column widths for participants sheet
   participantsSheet['!cols'] = [
     { wch: 5 },   // No
     { wch: 25 },  // Nama
     { wch: 30 },  // Email
     { wch: 15 },  // NIM
-    { wch: 15 },  // No WhatsApp
-    { wch: 30 },  // Jurusan
+    { wch: 16 },  // No WhatsApp
+    { wch: 24 },  // Jurusan
+    { wch: 24 },  // Instansi
+    { wch: 24 },  // Divisi
     { wch: 10 },  // Angkatan
-    { wch: 15 },  // Role
+    { wch: 18 },  // Role
     { wch: 12 },  // Status
-    { wch: 18 }   // Tanggal Daftar
+    { wch: 20 }   // Tanggal Daftar
   ];
 
-  // Add participants sheet to workbook
   XLSX.utils.book_append_sheet(workbook, participantsSheet, 'Data Peserta');
 
-  // Generate buffer
   const excelBuffer = XLSX.write(workbook, { 
     type: 'buffer', 
     bookType: 'xlsx',
@@ -158,9 +162,50 @@ function sanitizeFilename(filename) {
  */
 function getRoleLabel(role) {
   const roleMap = {
-    'PESERTA': '🎓 Peserta',
+    'PESERTA': '👤 Peserta',
+    'MAHASISWA': '🎓 Mahasiswa',
     'DOSEN': '👨‍🏫 Dosen',
-    'PANITIA': '👔 Panitia'
+    'PANITIA': '👔 Panitia',
+    'PENGURUS_HIMTI': '🏛️ Pengurus HIMTI'
   };
-  return roleMap[role] || role;
+  return roleMap[role] || normalizeCell(role);
+}
+
+function mapParticipantFields(participant) {
+  const role = String(participant.role || '').toUpperCase();
+  const source = participant.jurusan;
+
+  if (role === 'PESERTA') {
+    return { jurusan: null, instansi: source, divisi: null };
+  }
+
+  if (role === 'PANITIA') {
+    return { jurusan: null, instansi: null, divisi: source };
+  }
+
+  if (role === 'MAHASISWA' || role === 'PENGURUS_HIMTI') {
+    return { jurusan: source, instansi: null, divisi: null };
+  }
+
+  return { jurusan: null, instansi: null, divisi: null };
+}
+
+function normalizeCell(value) {
+  const text = value === null || value === undefined || value === '' ? '-' : String(value);
+  if (/^[=+\-@]/.test(text)) {
+    return `'${text}`;
+  }
+  return text;
+}
+
+function formatDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '-';
+  }
+  return date.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
 }

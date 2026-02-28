@@ -108,7 +108,7 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
         if (!formData.email) newErrors.email = 'Email harus diisi';
         if (!formData.no_wa) newErrors.no_wa = 'WhatsApp harus diisi';
         if ((formData.role === 'MAHASISWA' || formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') && !formData.nim) newErrors.nim = 'NIM harus diisi';
-        if (formData.role === 'PANITIA' && !formData.divisi) newErrors.divisi = 'Divisi harus diisi';
+        if ((formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') && !formData.divisi) newErrors.divisi = 'Divisi harus diisi';
         if (formData.role === 'PESERTA' && !formData.instansi) newErrors.instansi = 'Instansi harus diisi';
         if ((formData.role === 'MAHASISWA' || formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') && !formData.angkatan) newErrors.angkatan = 'Angkatan harus diisi';
         if ((formData.role === 'PENGURUS_HIMTI' || formData.role === 'MAHASISWA') && !formData.prodi) newErrors.prodi = 'Program Studi harus diisi';
@@ -130,6 +130,9 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
                     nim: formData.nim || 'N/A',
                     email: formData.email,
                     no_wa: formData.no_wa,
+                    prodi: formData.prodi,
+                    divisi: formData.divisi,
+                    instansi: formData.instansi,
                     jurusan: formData.role === 'PANITIA' ? formData.divisi : 
                             (formData.role === 'PESERTA' ? formData.instansi : 
                             (formData.role === 'PENGURUS_HIMTI' || formData.role === 'MAHASISWA' ? formData.prodi : 'Tidak disebutkan')),
@@ -220,8 +223,8 @@ export default function ShowEvent({ auth, event, remainingQuota, canRegister, ev
             });
         }
         
-        // Divisi untuk Panitia
-        if (formData.role === 'PANITIA') {
+        // Divisi untuk Panitia dan Pengurus HIMTI
+        if (formData.role === 'PANITIA' || formData.role === 'PENGURUS_HIMTI') {
             conditionalFields.push({ 
                 key: 'divisi', 
                 label: 'Divisi', 

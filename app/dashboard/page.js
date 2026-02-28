@@ -79,14 +79,21 @@ export default function Dashboard() {
         }
     }, [isAuthenticated]);
 
-    async function handleExportCSV(eventId, eventName) {
+    async function handleExportExcel(eventId, eventName) {
         try {
             setExportingId(eventId);
             
             const response = await fetch(`/api/events/${eventId}/export`);
             
             if (!response.ok) {
-                throw new Error('Export failed');
+                let errorMessage = 'Export failed';
+                try {
+                    const errorBody = await response.json();
+                    errorMessage = errorBody?.message || errorBody?.error || errorMessage;
+                } catch {
+                    errorMessage = `Export failed (${response.status})`;
+                }
+                throw new Error(errorMessage);
             }
             
             // Get the blob from response
@@ -106,8 +113,8 @@ export default function Dashboard() {
             
             alert('✅ Data berhasil diexport!');
         } catch (error) {
-            console.error('Error exporting CSV:', error);
-            alert('❌ Gagal export data. Silakan coba lagi.');
+            console.error('Error exporting Excel:', error);
+            alert(`❌ Gagal export data: ${error.message}`);
         } finally {
             setExportingId(null);
         }
@@ -555,7 +562,7 @@ export default function Dashboard() {
                                                         {/* Action Buttons */}
                                                         <div className="mt-4 flex gap-2 flex-wrap">
                                                             <button
-                                                                onClick={() => handleExportCSV(event.id, event.nama_event)}
+                                                                onClick={() => handleExportExcel(event.id, event.nama_event)}
                                                                 disabled={exportingId === event.id || event.participantCount === 0}
                                                                 className="px-3 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                                                                 title={event.participantCount === 0 ? 'Belum ada peserta' : 'Export data peserta ke Excel'}

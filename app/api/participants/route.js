@@ -34,6 +34,9 @@ export async function POST(req) {
       nim,
       no_wa,
       jurusan,
+      prodi,
+      divisi,
+      instansi,
       angkatan,
       status,
       role,
@@ -117,7 +120,16 @@ export async function POST(req) {
 
     /* ===== KIRIM EMAIL KONFIRMASI ===== */
     try {
-      await sendConfirmationEmail(email, participant, participant.event);
+      await sendConfirmationEmail(
+        email,
+        {
+          ...participant,
+          prodi,
+          divisi,
+          instansi,
+        },
+        participant.event
+      );
     } catch (emailError) {
       console.error('Warning: Email confirmation failed, but registration successful:', emailError.message);
       // Tidak gagalkan registrasi jika email gagal terkirim
