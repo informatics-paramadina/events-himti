@@ -104,7 +104,7 @@ function HeroCarousel({ events }) {
 
             <div className="flex items-end justify-between mb-8 sm:mb-12">
                 <h3 className="font-fredoka text-[1.75rem] sm:text-[2rem] font-bold leading-none text-slate-900">
-                    Mendatang<span style={{ color: '#2AAF15' }}>.</span>
+                    Segera Hadir<span style={{ color: '#2AAF15' }}>.</span>
                 </h3>
                 {total > 1 && (
                     <div className="flex gap-2 sm:gap-3">
@@ -167,7 +167,7 @@ function HeroCarousel({ events }) {
                         <Link href={`/events/${item.id}`}
                             className="b-btn block w-full text-center text-white py-3 sm:py-4 rounded-xl sm:rounded-[1.5rem] b-border font-black text-xs sm:text-sm uppercase tracking-[0.15em]"
                             style={{ background: '#2AAF15', boxShadow: '4px 4px 0 #000' }}>
-                            AMBIL TIKET SEKARANG
+                            Bergabung sekarang !!
                         </Link>
                     </div>
                 </div>
@@ -379,7 +379,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                         backdropFilter: 'blur(10px)',
                                         border: '2px solid rgba(255,255,255,0.3)',
                                     }}>
-                                    KAMPUS LIFE IS FUN!
+                                    Mari kita ciptakan kenangan bersama!!!
                                 </div>
 
                                 <div className="flex flex-col w-full gap-1">
@@ -389,7 +389,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                             textShadow: '4px 4px 0 #000',
                                             WebkitTextStroke: '1px #000',
                                         }}>
-                                        Pengembangan Kompetensi
+                                        Sistem Event
                                     </h1>
                                     <h1 className="font-fredoka font-bold text-green-200 leading-[1.1]"
                                         style={{
@@ -397,13 +397,13 @@ export default function EventsIndex({ auth, events, filters }) {
                                             textShadow: '4px 4px 0 #000',
                                             WebkitTextStroke: '2px #000',
                                         }}>
-                                        Mahasiswa Informatika.
+                                        Terintegrasi HIMTI.
                                     </h1>
                                 </div>
 
                                 <p className="w-full max-w-md text-xs font-bold leading-relaxed sm:text-sm md:text-base text-white/90">
-                                    Kegiatan workshop, seminar, dan kompetisi teknologi yang dirancang untuk mendukung peningkatan kemampuan{' '}
-                                    <span className="font-black text-green-200">akademik dan profesional.</span>
+                                    Platform ini mempermudah kita untuk mengetahui event yang{' '}
+                                    <span className="font-black text-green-200">diselenggarakan oleh HIMTI.</span>
                                 </p>
 
                                 <a href="#events"
@@ -477,7 +477,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                 </span>
                             </div>
                             <p className="text-xs font-bold sm:text-sm text-slate-400">
-                                {publishedCount} kegiatan tersedia—pendaftaran gratis dan terbuka untuk semua!
+                                {publishedCount} Kegiatan tersedia—Siapapun dapat bergabung tanpa dipungut biaya!
                             </p>
                         </div>
                         <div className="relative">
@@ -517,10 +517,10 @@ export default function EventsIndex({ auth, events, filters }) {
                             <span className="text-xl font-bold tracking-tight sm:text-2xl font-fredoka text-black">HIMTI Events</span>
                         </div>
                         <p className="max-w-xs text-xs font-bold sm:text-sm text-slate-400">
-                            Platform terpadu kegiatan dan pengembangan kompetensi mahasiswa Informatika HIMTI.
+                            Platform terpadu kegiatan HIMTI.
                         </p>
                         <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-                            {['Workshop', 'Seminar', 'Hackathon', 'Kompetisi'].map(tag => (
+                            {['Bukber HIMTI', 'IT FEST', 'KOBIT ACADEMY', 'REFORMATICS', 'IP ROUTING'].map(tag => (
                                 <span key={tag}
                                     className="b-border-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black text-slate-600 bg-slate-50"
                                     style={{ boxShadow: '2px 2px 0 #000' }}>
@@ -538,7 +538,7 @@ export default function EventsIndex({ auth, events, filters }) {
                             ))}
                         </div>
                         <p className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest text-slate-300 border-t-2 border-slate-100 pt-5 w-full mt-2 sm:mt-0">
-                             2026 HIMTI Events  Satu Platform, Ribuan Kesempatan
+                             PENDAFTARAN HIMTI EVENTS
                         </p>
                     </div>
                 </footer>
