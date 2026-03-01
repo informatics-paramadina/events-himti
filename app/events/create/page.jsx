@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeftIcon, CalendarIcon, ClockIcon, MapPinIcon, UsersIcon, BoltIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  CalendarIcon,
+  ClockIcon,
+  MapPinIcon,
+  UsersIcon,
+  BoltIcon,
+} from "@heroicons/react/24/outline";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
 
@@ -29,14 +36,78 @@ const CSS = `
 `;
 
 const FORM_FIELDS = [
-  { key: "nama_event", label: "Judul Event", placeholder: "Workshop Web Development", type: "text", icon: BoltIcon, required: true, fullWidth: true },
-  { key: "deskripsi", label: "Deskripsi", placeholder: "Jelaskan tentang event yang akan diselenggarakan...", type: "textarea", icon: null, required: true, fullWidth: true },
-  { key: "tanggal", label: "Tanggal", placeholder: "", type: "date", icon: CalendarIcon, required: true },
-  { key: "jam_mulai", label: "Jam Mulai", placeholder: "", type: "time", icon: ClockIcon, required: true },
-  { key: "jam_berakhir", label: "Jam Berakhir", placeholder: "", type: "time", icon: ClockIcon, required: true, fullWidth: true },
-  { key: "lokasi", label: "Lokasi", placeholder: "Auditorium Kampus", type: "text", icon: MapPinIcon, required: true, fullWidth: true },
-  { key: "kapasitas", label: "Kuota Peserta", placeholder: "50", type: "number", icon: UsersIcon, required: true },
-  { key: "status", label: "Status", placeholder: "", type: "select", icon: null, required: false, options: [{ value: "DRAFT", label: "📝 Draft" }, { value: "PUBLISHED", label: "🚀 Published" }] },
+  {
+    key: "nama_event",
+    label: "Judul Event",
+    placeholder: "Workshop Web Development",
+    type: "text",
+    icon: BoltIcon,
+    required: true,
+    fullWidth: true,
+  },
+  {
+    key: "deskripsi",
+    label: "Deskripsi",
+    placeholder: "Jelaskan tentang event yang akan diselenggarakan...",
+    type: "textarea",
+    icon: null,
+    required: true,
+    fullWidth: true,
+  },
+  {
+    key: "tanggal",
+    label: "Tanggal",
+    placeholder: "",
+    type: "date",
+    icon: CalendarIcon,
+    required: true,
+    fullWidth: true,
+  },
+  {
+    key: "jam_mulai",
+    label: "Jam Mulai",
+    placeholder: "",
+    type: "time",
+    icon: ClockIcon,
+    required: true,
+  },
+  {
+    key: "jam_berakhir",
+    label: "Jam Berakhir",
+    placeholder: "",
+    type: "time",
+    icon: ClockIcon,
+    required: true,
+  },
+  {
+    key: "lokasi",
+    label: "Lokasi",
+    placeholder: "Auditorium Kampus",
+    type: "text",
+    icon: MapPinIcon,
+    required: true,
+    fullWidth: true,
+  },
+  {
+    key: "kapasitas",
+    label: "Kuota Peserta",
+    placeholder: "50",
+    type: "number",
+    icon: UsersIcon,
+    required: true,
+  },
+  {
+    key: "status",
+    label: "Status",
+    placeholder: "",
+    type: "select",
+    icon: null,
+    required: false,
+    options: [
+      { value: "DRAFT", label: "📝 Draft" },
+      { value: "PUBLISHED", label: "🚀 Published" },
+    ],
+  },
 ];
 
 export default function CreateEventPage() {
@@ -50,6 +121,7 @@ export default function CreateEventPage() {
     lokasi: "",
     kapasitas: 50,
     status: "DRAFT",
+    isPaidEvent: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -59,7 +131,12 @@ export default function CreateEventPage() {
     setError("");
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "kapasitas" ? (value === "" ? "" : parseInt(value, 10) || 0) : value,
+      [name]:
+        name === "kapasitas"
+          ? value === ""
+            ? ""
+            : parseInt(value, 10) || 0
+          : value,
     }));
   };
 
@@ -69,7 +146,15 @@ export default function CreateEventPage() {
     setLoading(true);
 
     try {
-      if (!formData.nama_event || !formData.deskripsi || !formData.tanggal || !formData.jam_mulai || !formData.jam_berakhir || !formData.lokasi || !formData.kapasitas) {
+      if (
+        !formData.nama_event ||
+        !formData.deskripsi ||
+        !formData.tanggal ||
+        !formData.jam_mulai ||
+        !formData.jam_berakhir ||
+        !formData.lokasi ||
+        !formData.kapasitas
+      ) {
         setError("Semua field harus diisi!");
         setLoading(false);
         return;
@@ -86,6 +171,7 @@ export default function CreateEventPage() {
           jam_berakhir: formData.jam_berakhir,
           lokasi: formData.lokasi,
           kapasitas: parseInt(formData.kapasitas, 10),
+          isPaidEvent: formData.isPaidEvent,
         }),
       });
 
@@ -104,7 +190,15 @@ export default function CreateEventPage() {
     }
   };
 
-  const completedFields = [formData.nama_event, formData.deskripsi, formData.tanggal, formData.jam_mulai, formData.jam_berakhir, formData.lokasi, formData.kapasitas].filter(Boolean).length;
+  const completedFields = [
+    formData.nama_event,
+    formData.deskripsi,
+    formData.tanggal,
+    formData.jam_mulai,
+    formData.jam_berakhir,
+    formData.lokasi,
+    formData.kapasitas,
+  ].filter(Boolean).length;
   const pct = Math.round((completedFields / 7) * 100);
 
   return (
@@ -113,31 +207,44 @@ export default function CreateEventPage() {
       <div className="fixed inset-0 bg-dots" />
 
       {/* Hero header */}
-      <div className="relative overflow-hidden" style={{ background: "#2AAF15" }}>
+      <div
+        className="relative overflow-hidden"
+        style={{ background: "#2AAF15" }}
+      >
         {/* Big letter watermark */}
-        <div className="font-fredoka absolute right-4 -bottom-6 font-bold text-white/10 leading-none select-none pointer-events-none"
-          style={{ fontSize: "clamp(8rem, 22vw, 16rem)" }}>
+        <div
+          className="font-fredoka absolute right-4 -bottom-6 font-bold text-white/10 leading-none select-none pointer-events-none"
+          style={{ fontSize: "clamp(8rem, 22vw, 16rem)" }}
+        >
           +
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
           {/* Back button */}
-          <a href="/events"
+          <a
+            href="/events"
             className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-2xl text-sm font-black w-fit uppercase tracking-wider mb-8"
-            style={{ boxShadow: "4px 4px 0 #1a1a1a" }}>
+            style={{ boxShadow: "4px 4px 0 #1a1a1a" }}
+          >
             <ArrowLeftIcon className="w-4 h-4" strokeWidth={3} />
             Kembali
           </a>
 
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-white b-border rounded-2xl flex items-center justify-center flex-shrink-0"
-              style={{ boxShadow: "4px 4px 0 #1a1a1a" }}>
+            <div
+              className="w-14 h-14 bg-white b-border rounded-2xl flex items-center justify-center flex-shrink-0"
+              style={{ boxShadow: "4px 4px 0 #1a1a1a" }}
+            >
               <BoltIcon className="w-7 h-7 text-black" strokeWidth={2.5} />
             </div>
             <div>
-              <p className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-1">Formulir Baru</p>
-              <h1 className="font-fredoka text-3xl sm:text-4xl font-bold text-white"
-                style={{ textShadow: "3px 3px 0 rgba(0,0,0,0.15)" }}>
+              <p className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-1">
+                Formulir Baru
+              </p>
+              <h1
+                className="font-fredoka text-3xl sm:text-4xl font-bold text-white"
+                style={{ textShadow: "3px 3px 0 rgba(0,0,0,0.15)" }}
+              >
                 Buat Event<span className="text-black">.</span>
               </h1>
             </div>
@@ -146,16 +253,21 @@ export default function CreateEventPage() {
           {/* Progress bar */}
           <div className="mt-6 flex items-center gap-3">
             <div className="flex-1 h-3 overflow-hidden rounded-full b-border-2 bg-white/30">
-              <div className="h-full rounded-full c-bar"
+              <div
+                className="h-full rounded-full c-bar"
                 style={{
                   width: `${pct}%`,
                   background: "#fff",
-                  borderRight: pct > 0 && pct < 100 ? "3px solid #1a1a1a" : "none",
+                  borderRight:
+                    pct > 0 && pct < 100 ? "3px solid #1a1a1a" : "none",
                   transition: "width 0.55s cubic-bezier(.22,1,.36,1)",
-                }} />
+                }}
+              />
             </div>
-            <span className="text-white font-black text-xs tabular-nums"
-              style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.15)" }}>
+            <span
+              className="text-white font-black text-xs tabular-nums"
+              style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.15)" }}
+            >
               {completedFields}/7
             </span>
           </div>
@@ -168,12 +280,18 @@ export default function CreateEventPage() {
           <div className="p-6 sm:p-8">
             {/* Error message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-100 b-border rounded-2xl flex items-start gap-3"
-                style={{ boxShadow: "3px 3px 0 #f87171" }}>
+              <div
+                className="mb-6 p-4 bg-red-100 b-border rounded-2xl flex items-start gap-3"
+                style={{ boxShadow: "3px 3px 0 #f87171" }}
+              >
                 <span className="text-lg">⚠️</span>
                 <div>
-                  <p className="text-[11px] font-black text-red-400 uppercase tracking-widest">Error</p>
-                  <p className="text-sm font-bold text-red-700 mt-0.5">{error}</p>
+                  <p className="text-[11px] font-black text-red-400 uppercase tracking-widest">
+                    Error
+                  </p>
+                  <p className="text-sm font-bold text-red-700 mt-0.5">
+                    {error}
+                  </p>
                 </div>
               </div>
             )}
@@ -187,7 +305,12 @@ export default function CreateEventPage() {
                   const field = FORM_FIELDS[i];
                   if (field.fullWidth) {
                     elements.push(
-                      <FieldInput key={field.key} field={field} value={formData[field.key]} onChange={handleChange} />
+                      <FieldInput
+                        key={field.key}
+                        field={field}
+                        value={formData[field.key]}
+                        onChange={handleChange}
+                      />,
                     );
                     i++;
                   } else {
@@ -195,15 +318,31 @@ export default function CreateEventPage() {
                     const next = FORM_FIELDS[i + 1];
                     if (next && !next.fullWidth) {
                       elements.push(
-                        <div key={`grid-${field.key}`} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <FieldInput field={field} value={formData[field.key]} onChange={handleChange} />
-                          <FieldInput field={next} value={formData[next.key]} onChange={handleChange} />
-                        </div>
+                        <div
+                          key={`grid-${field.key}`}
+                          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                        >
+                          <FieldInput
+                            field={field}
+                            value={formData[field.key]}
+                            onChange={handleChange}
+                          />
+                          <FieldInput
+                            field={next}
+                            value={formData[next.key]}
+                            onChange={handleChange}
+                          />
+                        </div>,
                       );
                       i += 2;
                     } else {
                       elements.push(
-                        <FieldInput key={field.key} field={field} value={formData[field.key]} onChange={handleChange} />
+                        <FieldInput
+                          key={field.key}
+                          field={field}
+                          value={formData[field.key]}
+                          onChange={handleChange}
+                        />,
                       );
                       i++;
                     }
@@ -215,12 +354,48 @@ export default function CreateEventPage() {
               {/* Divider */}
               <div className="border-t-2 border-dashed border-slate-200" />
 
+              {/* Paid Event Toggle */}
+              <div className="bg-yellow-50 b-border rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                    Tipe Event
+                  </p>
+                  <p className="text-sm font-bold text-slate-800 mt-1">
+                    Event Berbayar
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Jika aktif, peserta harus upload bukti pembayaran
+                  </p>
+                </div>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.isPaidEvent}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        isPaidEvent: e.target.checked,
+                      }))
+                    }
+                    className="w-5 h-5 accent-black"
+                  />
+                  <span className="text-sm font-black">
+                    {formData.isPaidEvent ? "BERBAYAR" : "GRATIS"}
+                  </span>
+                </label>
+              </div>
+
               {/* Submit button */}
               <button
                 type="submit"
                 disabled={loading}
                 className="b-btn b-border w-full py-4 rounded-2xl font-black text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50 uppercase tracking-widest"
-                style={{ background: "#2AAF15", boxShadow: "4px 4px 0 #1a1a1a" }}>
+                style={{
+                  background: "#2AAF15",
+                  boxShadow: "4px 4px 0 #1a1a1a",
+                }}
+              >
                 {loading ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -241,7 +416,9 @@ export default function CreateEventPage() {
             <div className="flex items-center gap-2.5 bg-slate-50 b-border rounded-2xl px-4 py-3">
               <span className="text-sm">💡</span>
               <p className="text-[11px] font-black text-slate-500">
-                Event dengan status <span className="text-slate-900">Draft</span> tidak akan ditampilkan ke peserta
+                Event dengan status{" "}
+                <span className="text-slate-900">Draft</span> tidak akan
+                ditampilkan ke peserta
               </p>
             </div>
           </div>
@@ -252,9 +429,18 @@ export default function CreateEventPage() {
 }
 
 function FieldInput({ field, value, onChange }) {
-  const { key, label, placeholder, type, icon: Icon, required, options } = field;
+  const {
+    key,
+    label,
+    placeholder,
+    type,
+    icon: Icon,
+    required,
+    options,
+  } = field;
 
-  const inputClass = "w-full px-3.5 py-2.5 rounded-xl text-sm font-bold placeholder-slate-300 focus:outline-none transition-all b-border bg-white text-slate-900";
+  const inputClass =
+    "w-full px-3.5 py-2.5 rounded-xl text-sm font-bold placeholder-slate-300 focus:outline-none transition-all b-border bg-white text-slate-900";
   const inputStyle = { boxShadow: "3px 3px 0 #1a1a1a" };
 
   return (
@@ -282,9 +468,12 @@ function FieldInput({ field, value, onChange }) {
           value={value}
           onChange={onChange}
           className={`${inputClass} cursor-pointer`}
-          style={inputStyle}>
+          style={inputStyle}
+        >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
         </select>
       ) : (

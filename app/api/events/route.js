@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 import { prisma } from "../../../lib/prisma";
 
@@ -9,15 +9,15 @@ export async function GET() {
         participants: true,
       },
       orderBy: {
-        tanggal: 'asc',
+        tanggal: "asc",
       },
     });
     return Response.json(events);
   } catch (error) {
-    console.error('Error fetching events:', error.message);
+    console.error("Error fetching events:", error.message);
     return Response.json(
-      { error: 'Failed to fetch events', message: error.message },
-      { status: 500 }
+      { error: "Failed to fetch events", message: error.message },
+      { status: 500 },
     );
   }
 }
@@ -35,6 +35,7 @@ export async function POST(req) {
         jam_berakhir: body.jam_berakhir,
         lokasi: body.lokasi,
         kapasitas: body.kapasitas,
+        isPaidEvent: body.isPaidEvent ?? false,
       },
       include: {
         participants: true,
@@ -43,10 +44,10 @@ export async function POST(req) {
 
     return Response.json(event, { status: 201 });
   } catch (error) {
-    console.error('Error creating event:', error.message);
+    console.error("Error creating event:", error.message);
     return Response.json(
-      { error: 'Failed to create event', message: error.message },
-      { status: 500 }
+      { error: "Failed to create event", message: error.message },
+      { status: 500 },
     );
   }
 }
