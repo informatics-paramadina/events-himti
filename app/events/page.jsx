@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import EventsIndex from './Index';
+import { useEffect, useState } from "react";
+import EventsIndex from "./Index";
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
@@ -10,7 +10,7 @@ export default function EventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch('/api/events');
+        const res = await fetch("/api/events");
         const data = await res.json();
 
         const mapped = Array.isArray(data)
@@ -22,8 +22,9 @@ export default function EventsPage() {
               time: `${event.jam_mulai} - ${event.jam_berakhir}`,
               location: event.lokasi,
               quota: event.kapasitas,
-              status: event.status || 'PUBLISHED',
+              status: event.status || "PUBLISHED",
               poster: event.poster || null,
+              isPaidEvent: event.isPaidEvent ?? false,
               _count: {
                 participants: event.participants?.length || 0,
               },
@@ -32,7 +33,7 @@ export default function EventsPage() {
 
         setEvents(mapped);
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
         setEvents([]);
       } finally {
         setLoading(false);
@@ -44,7 +45,10 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#FEFEFE' }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "#FEFEFE" }}
+      >
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
           .font-fredoka { font-family: 'Fredoka', sans-serif; }
@@ -54,25 +58,34 @@ export default function EventsPage() {
         `}</style>
         <div className="fixed inset-0 bg-dots" />
         <div className="relative z-10 text-center">
-          <div className="w-20 h-20 bg-white b-border rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ boxShadow: '6px 6px 0 #1a1a1a' }}>
+          <div
+            className="w-20 h-20 bg-white b-border rounded-2xl flex items-center justify-center mx-auto mb-5"
+            style={{ boxShadow: "6px 6px 0 #1a1a1a" }}
+          >
             <div className="flex gap-1.5">
               {[0, 0.15, 0.3].map((d, i) => (
-                <div key={i} className="w-3 h-3 rounded-full" style={{ background: '#2AAF15', animation: 'bounce1 1.2s infinite ease-in-out', animationDelay: `${d}s` }} />
+                <div
+                  key={i}
+                  className="w-3 h-3 rounded-full"
+                  style={{
+                    background: "#2AAF15",
+                    animation: "bounce1 1.2s infinite ease-in-out",
+                    animationDelay: `${d}s`,
+                  }}
+                />
               ))}
             </div>
           </div>
-          <p className="font-fredoka text-xl font-bold text-slate-900">Memuat Events<span style={{ color: '#2AAF15' }}>...</span></p>
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Mohon tunggu sebentar</p>
+          <p className="font-fredoka text-xl font-bold text-slate-900">
+            Memuat Events<span style={{ color: "#2AAF15" }}>...</span>
+          </p>
+          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">
+            Mohon tunggu sebentar
+          </p>
         </div>
       </div>
     );
   }
 
-  return (
-    <EventsIndex
-      auth={{ user: null }}
-      events={events}
-      filters={{}}
-    />
-  );
+  return <EventsIndex auth={{ user: null }} events={events} filters={{}} />;
 }
