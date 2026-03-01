@@ -1,9 +1,9 @@
-export const dynamic = "force-dynamic"
-export const runtime = "nodejs"
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 import { prisma } from "../../../lib/prisma";
 import { sendConfirmationEmail } from "../../../lib/mail";
-
+import cloudinary from "../../../lib/cloudinary";
 /* =======================
    GET → ambil semua peserta
 ======================= */
@@ -16,10 +16,10 @@ export async function GET() {
 
     return Response.json(data);
   } catch (error) {
-    console.error('Error fetching participants:', error.message);
+    console.error("Error fetching participants:", error.message);
     return Response.json(
-      { error: 'Failed to fetch participants', message: error.message },
-      { status: 500 }
+      { error: "Failed to fetch participants", message: error.message },
+      { status: 500 },
     );
   }
 }
@@ -29,47 +29,41 @@ export async function GET() {
 ======================= */
 export async function POST(req) {
   try {
-    const body = await req.json();
+    const formData = await req.formData();
 
-    const {
-      nama,
-      email,
-      nim,
-      no_wa,
-      jurusan,
-      prodi,
-      divisi,
-      instansi,
-      angkatan,
-      status,
-      role,
-      eventId,
-    } = body;
+    const nama = formData.get("nama");
+    const email = formData.get("email");
+    const nim = formData.get("nim");
+    const no_wa = formData.get("no_wa");
+    const jurusan = formData.get("jurusan");
+    const divisi = formData.get("divisi");
+    const instansi = formData.get("instansi");
+    const angkatan = formData.get("angkatan");
+    const status = formData.get("status");
+    const role = formData.get("role");
+    const eventId = formData.get("eventId");
+    const file = formData.get("bukti_pembayaran");
 
-    // Validasi eventId adalah UUID yang valid (generic UUID format)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    /* ===== VALIDASI EVENT ID ===== */
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
     if (!uuidRegex.test(eventId)) {
       return Response.json(
         { message: "Event ID tidak valid" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    /* ===== VALIDASI ===== */
+    /* ===== VALIDASI WAJIB ===== */
     if (!nama || !email || !eventId) {
-      return Response.json(
-        { message: "Data belum lengkap" },
-        { status: 400 }
-      );
+      return Response.json({ message: "Data belum lengkap" }, { status: 400 });
     }
 
     /* ===== CEK DOUBLE ===== */
-    // Jika NIM ada (bukan "N/A"), check duplikat berdasarkan NIM
-    // Jika NIM "N/A" (PESERTA), check duplikat berdasarkan email
-    const checkDuplicateFilter = nim && nim !== 'N/A' 
-      ? { nim, eventId }
-      : { email, eventId };
-    
+    const checkDuplicateFilter =
+      nim && nim !== "N/A" ? { nim, eventId } : { email, eventId };
+
     const existing = await prisma.participant.findFirst({
       where: checkDuplicateFilter,
     });
@@ -77,7 +71,7 @@ export async function POST(req) {
     if (existing) {
       return Response.json(
         { message: "Kamu sudah terdaftar di event ini" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -90,22 +84,57 @@ export async function POST(req) {
     if (!event) {
       return Response.json(
         { message: "Event tidak ditemukan" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     /* ===== CEK KUOTA ===== */
-    if (
-      event.kapasitas &&
-      event.participants.length >= event.kapasitas
-    ) {
+    if (event.kapasitas && event.participants.length >= event.kapasitas) {
       return Response.json(
         { message: "Kuota event sudah penuh" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    /* ===== SIMPAN ===== */
+    /* ===============================
+       🔥 HANDLE UPLOAD CLOUDINARY
+    ================================ */
+
+    let buktiUrl = null;
+    let paymentStatus = "FREE";
+
+    if (event.isPaidEvent) {
+      if (!file || file.size === 0) {
+        return Response.json(
+          { message: "Bukti pembayaran wajib diupload" },
+          { status: 400 },
+        );
+      }
+
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: `himti-events/${eventId}`,
+              resource_type: "auto",
+              public_id: `bukti-${nama}-${Date.now()}`,
+            },
+            (err, result) => {
+              if (err) reject(err);
+              else resolve(result);
+            },
+          )
+          .end(buffer);
+      });
+
+      buktiUrl = uploadResult.secure_url;
+      paymentStatus = "PENDING";
+    }
+
+    /* ===== SIMPAN KE DB ===== */
     const participant = await prisma.participant.create({
       data: {
         nama,
@@ -116,34 +145,39 @@ export async function POST(req) {
         angkatan,
         status: status || "terdaftar",
         role: role || "PESERTA",
-        eventId,
+        event: {
+          connect: { id: eventId },
+        },
+        buktiPembayaran: buktiUrl,
+        paymentStatus,
+        instansi,
+        divisi,
       },
       include: { event: true },
     });
 
-    /* ===== KIRIM EMAIL KONFIRMASI ===== */
+    /* ===== KIRIM EMAIL ===== */
     try {
       await sendConfirmationEmail(
         email,
         {
           ...participant,
-          prodi,
+          jurusan,
           divisi,
           instansi,
         },
-        participant.event
+        participant.event,
       );
     } catch (emailError) {
-      console.error('Warning: Email confirmation failed, but registration successful:', emailError.message);
-      // Tidak gagalkan registrasi jika email gagal terkirim
+      console.error("Warning: Email gagal terkirim:", emailError.message);
     }
 
     return Response.json(participant, { status: 201 });
   } catch (err) {
-    console.error('Error creating participant:', err);
+    console.error("Error creating participant:", err);
     return Response.json(
       { message: "Terjadi kesalahan server", error: err.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
