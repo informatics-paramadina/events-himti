@@ -111,6 +111,7 @@ function generateExcel(event) {
         normalizeCell(participant.status),
         getPaymentProofLabel(participant.paymentStatus),
         new Date(participant.createdAt).toLocaleString("id-ID", {
+          timeZone: "Asia/Jakarta",
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
@@ -123,7 +124,7 @@ function generateExcel(event) {
 
   function getPaymentProofLabel(bukti) {
     if (!bukti) return "❌ Belum Upload";
-    return bukti; 
+    return bukti;
   }
 
   const participantsSheet = XLSX.utils.aoa_to_sheet(participantsData);
@@ -140,7 +141,7 @@ function generateExcel(event) {
     { wch: 10 }, // Angkatan
     { wch: 18 }, // Role
     { wch: 12 }, // Status
-    { wch: 20 },  // Bukti Pembayaran
+    { wch: 20 }, // Bukti Pembayaran
     { wch: 20 }, // Tanggal Daftar
   ];
 
