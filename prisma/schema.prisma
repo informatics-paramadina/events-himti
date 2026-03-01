@@ -13,6 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PaymentStatus {
+  FREE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id        String   @id @default(cuid())
   nama      String
@@ -26,32 +33,40 @@ model User {
 }
 
 model Event {
-  id          String   @id @default(uuid())
-  nama_event  String
-  deskripsi   String?
-  tanggal     DateTime
-  jam_mulai   String
+  id           String   @id @default(uuid())
+  nama_event   String
+  deskripsi    String?
+  tanggal      DateTime
+  jam_mulai    String
   jam_berakhir String
-  lokasi      String
-  kapasitas   Int?
+  lokasi       String
+  kapasitas    Int?
 
-  createdAt   DateTime @default(now())
+  isPaidEvent Boolean @default(false)
+
+  createdAt    DateTime      @default(now())
   participants Participant[]
 }
 
 model Participant {
-  id        Int      @id @default(autoincrement())
-  nama      String
-  email     String
-  nim       String
-  no_wa     String
-  jurusan   String
-  angkatan  String
-  status    String
-  role      String   @default("PESERTA") // PESERTA, DOSEN, PANITIA
+  id       Int    @id @default(autoincrement())
+  nama     String
+  email    String
+  nim      String?
+  no_wa    String
+  jurusan  String?
+  angkatan String?
+  status   String
+  role     String @default("PESERTA") // PESERTA, DOSEN, PANITIA
 
-  eventId   String
-  event     Event    @relation(fields: [eventId], references: [id])
+  instansi String?
+  divisi String?
+  
+  buktiPembayaran String?
+  paymentStatus PaymentStatus @default(FREE)
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id])
 
   createdAt DateTime @default(now())
 }
