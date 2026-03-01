@@ -451,7 +451,7 @@ export default function EventsIndex({ auth, events, filters }) {
                                             style={{ lineHeight: 1 }}>
                                             100%
                                         </p>
-                                        <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-tight text-white/70 mt-1">Gratis</p>
+                                        <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-tight text-white/70 mt-1">Terjangkau</p>
                                     </div>
                                 </div>
                             </div>
