@@ -428,6 +428,9 @@ export default function ParticipantsPage() {
                     Bukti
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tugas
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Aksi
                   </th>
                 </tr>
@@ -645,6 +648,34 @@ export default function ParticipantsPage() {
                         ) : (
                           <span className="text-gray-400 text-xs italic">
                             Tidak ada
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {participant.submissions &&
+                        participant.submissions.length > 0 ? (
+                          <div className="flex flex-col gap-1">
+                            <span className="px-3 py-1 inline-flex text-xs font-semibold rounded-full border bg-green-100 text-green-800 border-green-300">
+                              ✓ Terkumpul
+                            </span>
+                            <a
+                              href={`/api/sertifikat/${participant.submissions[0].id}`}
+                              className="text-xs text-blue-600 hover:underline font-medium"
+                            >
+                              ⬇ Sertifikat
+                            </a>
+                            <a
+                              href={participant.submissions[0].fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-slate-500 hover:underline"
+                            >
+                              Lihat tugas
+                            </a>
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 text-xs italic">
+                            Belum
                           </span>
                         )}
                       </td>

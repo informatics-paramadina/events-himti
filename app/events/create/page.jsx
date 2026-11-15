@@ -122,6 +122,10 @@ export default function CreateEventPage() {
     kapasitas: 50,
     status: "DRAFT",
     isPaidEvent: false,
+    adaTugas: false,
+    judulTugas: "",
+    deskripsiTugas: "",
+    deadlineTugas: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -172,6 +176,10 @@ export default function CreateEventPage() {
           lokasi: formData.lokasi,
           kapasitas: parseInt(formData.kapasitas, 10),
           isPaidEvent: formData.isPaidEvent,
+          adaTugas: formData.adaTugas,
+          judulTugas: formData.judulTugas,
+          deskripsiTugas: formData.deskripsiTugas,
+          deadlineTugas: formData.deadlineTugas,
         }),
       });
 
@@ -385,6 +393,83 @@ export default function CreateEventPage() {
                   </span>
                 </label>
               </div>
+
+              {/* Tugas Pasca-Acara Toggle */}
+              <div className="bg-green-50 b-border rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                    Tugas &amp; Sertifikat
+                  </p>
+                  <p className="text-sm font-bold text-slate-800 mt-1">
+                    Ada Tugas Pasca-Acara
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Peserta mengumpulkan tugas via web dan mendapat sertifikat otomatis
+                  </p>
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.adaTugas}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, adaTugas: e.target.checked }))
+                    }
+                    className="w-5 h-5 accent-black"
+                  />
+                  <span className="text-sm font-black">
+                    {formData.adaTugas ? "ADA" : "TIDAK"}
+                  </span>
+                </label>
+              </div>
+
+              {formData.adaTugas && (
+                <div className="space-y-4 bg-slate-50 b-border rounded-2xl p-4">
+                  <div>
+                    <label className="block text-[11px] font-black text-slate-600 uppercase tracking-wider mb-2">
+                      Judul Tugas
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.judulTugas}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, judulTugas: e.target.value }))
+                      }
+                      placeholder="Contoh: Resume Materi KOBIT"
+                      className="w-full px-3.5 py-2.5 rounded-xl text-sm font-bold placeholder-slate-300 focus:outline-none b-border bg-white text-slate-900"
+                      style={{ boxShadow: "3px 3px 0 #1a1a1a" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-black text-slate-600 uppercase tracking-wider mb-2">
+                      Deskripsi Tugas
+                    </label>
+                    <textarea
+                      value={formData.deskripsiTugas}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, deskripsiTugas: e.target.value }))
+                      }
+                      placeholder="Jelaskan instruksi tugas..."
+                      rows="3"
+                      className="w-full px-3.5 py-2.5 rounded-xl text-sm font-bold placeholder-slate-300 focus:outline-none b-border bg-white text-slate-900 resize-none"
+                      style={{ boxShadow: "3px 3px 0 #1a1a1a" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-black text-slate-600 uppercase tracking-wider mb-2">
+                      Deadline Pengumpulan
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={formData.deadlineTugas}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, deadlineTugas: e.target.value }))
+                      }
+                      className="w-full px-3.5 py-2.5 rounded-xl text-sm font-bold focus:outline-none b-border bg-white text-slate-900"
+                      style={{ boxShadow: "3px 3px 0 #1a1a1a" }}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Submit button */}
               <button

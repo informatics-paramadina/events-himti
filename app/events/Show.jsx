@@ -9,6 +9,7 @@ import {
   ClockIcon,
   ArrowLeftIcon,
   BoltIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
@@ -991,6 +992,51 @@ export default function ShowEvent({
                 </div>
               </div>
             </div>
+
+            {/* Tugas & Sertifikat */}
+            {event.adaTugas && (
+              <div className="bg-white b-border b-shadow-sm overflow-hidden rounded-[2rem]">
+                <div
+                  className="px-6 py-4 flex items-center gap-3"
+                  style={{ borderBottom: "3px solid #1a1a1a", background: "#ecfccb" }}
+                >
+                  <div className="w-3 h-6 rounded-sm" style={{ background: acc.bg }} />
+                  <h2 className="font-fredoka text-xl font-bold text-slate-900 uppercase tracking-wide">
+                    Tugas &amp; Sertifikat
+                  </h2>
+                </div>
+                <div className="px-6 py-5 space-y-3">
+                  <p className="text-sm font-black text-slate-900">
+                    {event.judulTugas || "Tugas Pasca-Acara"}
+                  </p>
+                  {event.deskripsiTugas && (
+                    <p className="text-sm text-slate-600 whitespace-pre-line font-medium">
+                      {event.deskripsiTugas}
+                    </p>
+                  )}
+                  {event.deadlineTugas && (
+                    <p className="text-xs font-black text-slate-500">
+                      Deadline:{" "}
+                      {new Date(event.deadlineTugas).toLocaleString("id-ID", {
+                        dateStyle: "long",
+                        timeStyle: "short",
+                      })}
+                    </p>
+                  )}
+                  <Link
+                    href={`/events/${event.id}/tugas`}
+                    className="b-btn b-border inline-flex items-center gap-2 px-4 py-2.5 text-sm font-black text-white rounded-2xl uppercase tracking-wider"
+                    style={{ background: acc.btn }}
+                  >
+                    <DocumentTextIcon className="w-4 h-4" strokeWidth={2.5} />
+                    Kumpulkan Tugas
+                  </Link>
+                  <p className="text-[11px] text-slate-400 font-bold">
+                    Kumpulkan tugas untuk mendapatkan sertifikat otomatis.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Admin */}
             {isAdmin && (

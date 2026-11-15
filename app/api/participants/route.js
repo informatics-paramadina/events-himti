@@ -10,7 +10,7 @@ import cloudinary from "../../../lib/cloudinary";
 export async function GET() {
   try {
     const data = await prisma.participant.findMany({
-      include: { event: true },
+      include: { event: true, submissions: true },
       orderBy: { createdAt: "desc" },
     });
 

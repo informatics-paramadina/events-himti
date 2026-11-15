@@ -44,6 +44,11 @@ export async function PUT(req, { params }) {
         jam_berakhir: body.jam_berakhir,
         lokasi: body.lokasi,
         kapasitas: body.kapasitas ? parseInt(body.kapasitas) : null,
+        isPaidEvent: body.isPaidEvent ?? false,
+        adaTugas: body.adaTugas ?? false,
+        judulTugas: body.judulTugas || null,
+        deskripsiTugas: body.deskripsiTugas || null,
+        deadlineTugas: body.deadlineTugas ? new Date(body.deadlineTugas) : null,
       },
       include: {
         participants: true,
@@ -63,12 +68,13 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     const { id } = await params;
-    
-    // Delete all participants for this event first
+
+    // Delete submissions, then participants, then the event (FK order)
+    await prisma.submission.deleteMany({ where: { eventId: id } });
     await prisma.participant.deleteMany({
       where: { eventId: id },
     });
-    
+
     // Then delete the event
     await prisma.event.delete({
       where: { id },

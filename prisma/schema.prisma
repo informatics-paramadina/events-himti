@@ -44,8 +44,15 @@ model Event {
 
   isPaidEvent Boolean @default(false)
 
+  // Tugas pasca-acara & sertifikat
+  adaTugas       Boolean   @default(false)
+  judulTugas     String?
+  deskripsiTugas String?
+  deadlineTugas  DateTime?
+
   createdAt    DateTime      @default(now())
   participants Participant[]
+  submissions  Submission[]
 }
 
 model Participant {
@@ -68,5 +75,21 @@ model Participant {
   eventId String
   event   Event  @relation(fields: [eventId], references: [id])
 
-  createdAt DateTime @default(now())
+  createdAt   DateTime     @default(now())
+  submissions Submission[]
+}
+
+model Submission {
+  id            String   @id @default(cuid())
+  fileUrl       String
+  fileName      String?
+  certificateNumber String @unique
+  submittedAt   DateTime @default(now())
+
+  eventId       String
+  event         Event       @relation(fields: [eventId], references: [id])
+  participantId Int
+  participant   Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([eventId, participantId])
 }

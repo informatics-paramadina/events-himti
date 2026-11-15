@@ -36,6 +36,10 @@ export async function POST(req) {
         lokasi: body.lokasi,
         kapasitas: body.kapasitas,
         isPaidEvent: body.isPaidEvent ?? false,
+        adaTugas: body.adaTugas ?? false,
+        judulTugas: body.judulTugas || null,
+        deskripsiTugas: body.deskripsiTugas || null,
+        deadlineTugas: body.deadlineTugas ? new Date(body.deadlineTugas) : null,
       },
       include: {
         participants: true,

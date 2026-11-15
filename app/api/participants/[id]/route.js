@@ -157,6 +157,9 @@ export async function DELETE(req, { params }) {
       );
     }
 
+    await prisma.submission.deleteMany({
+      where: { participantId },
+    });
     await prisma.participant.delete({
       where: { id: participantId },
     });
