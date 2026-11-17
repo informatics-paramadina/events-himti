@@ -344,7 +344,7 @@ export default function EventsIndex({ auth, events, filters }) {
                 <header className="sticky top-0 z-50 px-4 pt-4 pb-3 sm:px-6">
                     <nav className="flex items-center justify-between px-4 mx-auto bg-white sm:px-5 max-w-7xl b-border rounded-2xl sm:px-7"
                         style={{ height: '60px', boxShadow: '6px 6px 0 #000' }}>
-                        <Link href="/events" className="flex items-center gap-2.5">
+                        <Link href="/" className="flex items-center gap-2.5">
                             <div className="flex items-center justify-center w-8 h-8 bg-green-500 sm:w-10 sm:h-10 b-border rounded-xl b-btn"
                                 style={{ boxShadow: '3px 3px 0 #000' }}>
                                 <BoltIcon className="w-4 h-4 text-black sm:w-5 sm:h-5" strokeWidth={3} />

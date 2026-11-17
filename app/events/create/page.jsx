@@ -189,7 +189,7 @@ export default function CreateEventPage() {
       }
 
       await response.json();
-      router.push("/events");
+      router.push("/dashboard/events");
     } catch (err) {
       console.error("Error creating event:", err);
       setError(err.message || "Terjadi kesalahan saat membuat event");
@@ -230,7 +230,7 @@ export default function CreateEventPage() {
         <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
           {/* Back button */}
           <a
-            href="/events"
+            href="/dashboard/events"
             className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-2xl text-sm font-black w-fit uppercase tracking-wider mb-8"
             style={{ boxShadow: "4px 4px 0 #1a1a1a" }}
           >

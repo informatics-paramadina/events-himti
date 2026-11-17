@@ -480,7 +480,7 @@ export default function ShowEvent({
               </p>
             </div>
             <Link
-              href="/events"
+              href="/"
               className="b-btn b-border flex items-center justify-center w-full gap-2 py-3.5 text-sm font-black text-white rounded-2xl uppercase tracking-widest"
               style={{ background: "#1a1a1a" }}
             >
@@ -797,7 +797,7 @@ export default function ShowEvent({
           }}
         >
           <Link
-            href="/events"
+            href="/"
             className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-2xl text-sm font-black w-fit uppercase tracking-wider"
           >
             <ArrowLeftIcon className="w-3.5 h-3.5" strokeWidth={3} />
@@ -1100,7 +1100,7 @@ export default function ShowEvent({
             className="max-w-7xl mx-auto bg-white b-border b-shadow-sm rounded-2xl px-5 sm:px-7 flex items-center justify-between"
             style={{ height: "72px" }}
           >
-            <Link href="/events" className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2.5">
               <div
                 className="w-10 h-10 bg-green-500 b-border rounded-xl flex items-center justify-center"
                 style={{ boxShadow: "3px 3px 0 #1a1a1a" }}

@@ -49,20 +49,28 @@ export default function Dashboard() {
     }
   }, []);
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    const correctPassword = "ristekhimtikece";
-
-    if (passwordInput === correctPassword) {
-      sessionStorage.setItem("dashboard_authenticated", "true");
-      setIsAuthenticated(true);
-      setShowPasswordModal(false);
-      setPasswordError("");
-      fetchDashboardData();
-    } else {
-      setPasswordError("Password salah! Silakan coba lagi.");
-      setPasswordInput("");
+    try {
+      const res = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: passwordInput }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        sessionStorage.setItem("dashboard_authenticated", "true");
+        setIsAuthenticated(true);
+        setShowPasswordModal(false);
+        setPasswordError("");
+        fetchDashboardData();
+        return;
+      }
+      setPasswordError(data.message || "Password salah! Silakan coba lagi.");
+    } catch {
+      setPasswordError("Gagal memverifikasi password. Periksa koneksi Anda.");
     }
+    setPasswordInput("");
   };
 
   const handleLogout = () => {
@@ -375,10 +383,10 @@ export default function Dashboard() {
             </button>
 
             <Link
-              href="/events"
+              href="/"
               className="block text-center text-sm font-bold text-gray-600 hover:text-green-600 mt-4"
             >
-              ← Kembali ke Events
+              ← Kembali ke Halaman Utama
             </Link>
           </form>
         </div>
@@ -417,7 +425,7 @@ export default function Dashboard() {
             </div>
             <div className="mt-4 flex md:mt-0 md:ml-4 space-x-3">
               <Link
-                href="/events"
+                href="/dashboard/events"
                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition"
               >
                 <CalendarIcon className="h-5 w-5 mr-2" />
@@ -512,7 +520,7 @@ export default function Dashboard() {
                   </p>
                 </div>
                 <Link
-                  href="/events"
+                  href="/dashboard/events"
                   className="text-sm text-green-600 hover:text-green-700 font-medium"
                 >
                   Lihat Semua →
@@ -670,7 +678,7 @@ export default function Dashboard() {
                     </p>
                   </div>
                   <Link
-                    href="/participants"
+                    href="/dashboard/participants"
                     className="text-sm text-green-600 hover:text-green-700 font-medium"
                   >
                     Lihat Semua →
@@ -784,14 +792,14 @@ export default function Dashboard() {
                   Buat Event Baru
                 </Link>
                 <Link
-                  href="/events"
+                  href="/dashboard/events"
                   className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-sm font-bold transition text-white shadow-sm"
                 >
                   <CalendarIcon className="h-5 w-5" />
                   Kelola Events
                 </Link>
                 <Link
-                  href="/participants"
+                  href="/dashboard/participants"
                   className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg text-sm font-bold transition text-white shadow-sm"
                 >
                   <UsersIcon className="h-5 w-5" />

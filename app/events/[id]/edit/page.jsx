@@ -122,8 +122,8 @@ export default function EditEventPage() {
           </div>
           <h1 className="font-fredoka text-2xl font-bold text-slate-900">Event Tidak Ditemukan</h1>
           <p className="text-sm font-bold text-slate-400 mt-2 mb-6">Event yang kamu cari tidak tersedia atau sudah dihapus.</p>
-          <a href="/events" className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-2xl text-sm font-black uppercase tracking-wider" style={{ boxShadow: '4px 4px 0 #1a1a1a' }}>
-            ← Kembali ke Events
+          <a href="/dashboard/events" className="b-btn b-border inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-2xl text-sm font-black uppercase tracking-wider" style={{ boxShadow: '4px 4px 0 #1a1a1a' }}>
+            ← Kembali ke Kelola Events
           </a>
         </div>
       </div>
