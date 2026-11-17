@@ -404,7 +404,7 @@ export default function CreateEventPage() {
                     Ada Tugas Pasca-Acara
                   </p>
                   <p className="text-xs text-slate-500">
-                    Peserta mengumpulkan tugas via web dan mendapat sertifikat otomatis
+                    Peserta mengumpulkan tugas via web sebagai syarat pembagian sertifikat
                   </p>
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">

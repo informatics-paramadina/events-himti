@@ -659,19 +659,21 @@ export default function ParticipantsPage() {
                               ✓ Terkumpul
                             </span>
                             <a
-                              href={`/api/sertifikat/${participant.submissions[0].id}`}
-                              className="text-xs text-blue-600 hover:underline font-medium"
-                            >
-                              ⬇ Sertifikat
-                            </a>
-                            <a
                               href={participant.submissions[0].fileUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs text-slate-500 hover:underline"
+                              className="text-xs text-blue-600 hover:underline font-semibold"
                             >
                               Lihat tugas
                             </a>
+                            {participant.submissions[0].certificateNumber && (
+                              <a
+                                href={`/api/sertifikat/${participant.submissions[0].id}`}
+                                className="text-xs text-slate-400 hover:underline font-medium"
+                              >
+                                ⬇ Sertifikat Lama
+                              </a>
+                            )}
                           </div>
                         ) : (
                           <span className="text-gray-400 text-xs italic">

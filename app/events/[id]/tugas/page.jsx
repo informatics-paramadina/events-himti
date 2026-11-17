@@ -8,7 +8,6 @@ import {
   DocumentTextIcon,
   ClockIcon,
   CheckBadgeIcon,
-  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 
 const CSS = `
@@ -168,41 +167,44 @@ export default function TugasPage() {
             <CheckBadgeIcon className="w-9 h-9" style={{ color: "#2AAF15" }} />
           </div>
           <h3 className="font-fredoka text-2xl font-bold text-white mb-1">
-            Tugas Terkumpul!
+            Tugas Berhasil Terkumpul!
           </h3>
-          <p className="text-white/80 text-sm font-bold">
-            Sertifikat kamu sudah siap diunduh
+          <p className="text-white/90 text-sm font-semibold">
+            Terima kasih telah menyelesaikan tugas event ini
           </p>
         </div>
         <div className="p-6 space-y-4">
-          <div className="p-4 bg-slate-50 b-border rounded-2xl">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
-              Nomor Sertifikat
+          {/* Card Info Pembagian Sertifikat via Google Drive & WA */}
+          <div className="p-5 bg-amber-50 b-border rounded-2xl border-amber-300 space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🎓</span>
+              <p className="text-xs font-black text-amber-900 uppercase tracking-wider">
+                Informasi Sertifikat Kegiatan
+              </p>
+            </div>
+            <p className="text-xs font-bold text-amber-900 leading-relaxed">
+              Sertifikat akan dibagikan oleh panitia melalui tautan folder <strong>Google Drive</strong> via <strong>WhatsApp (WA)</strong> setelah seluruh tugas direkap dan divalidasi.
             </p>
-            <p className="text-sm font-black text-slate-900 break-all">
-              {result.certificateNumber}
+            <p className="text-[11px] text-amber-800 font-medium">
+              Pastikan nomor WhatsApp yang kamu daftarkan tetap aktif untuk menerima link sertifikat.
             </p>
           </div>
-          <a
-            href={result.certificateUrl}
-            className="b-btn b-border flex items-center justify-center w-full gap-2 py-4 rounded-2xl font-black text-sm text-white uppercase tracking-widest"
-            style={{ background: "#2AAF15", boxShadow: "4px 4px 0 #1a1a1a" }}
-          >
-            <ArrowDownTrayIcon className="w-5 h-5" strokeWidth={2.5} /> Unduh Sertifikat (PDF)
-          </a>
+
           {result.fileUrl && (
             <a
               href={result.fileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="b-btn b-border flex items-center justify-center w-full gap-2 py-3 rounded-2xl text-sm font-black text-slate-700 bg-white uppercase tracking-widest"
+              className="b-btn b-border flex items-center justify-center w-full gap-2 py-3.5 rounded-2xl text-sm font-black text-slate-800 bg-white uppercase tracking-widest"
+              style={{ boxShadow: "3px 3px 0 #1a1a1a" }}
             >
-              <DocumentTextIcon className="w-4 h-4" /> Lihat File Tugas
+              <DocumentTextIcon className="w-4 h-4" /> Lihat File Tugas Kamu
             </a>
           )}
+
           <div className="flex items-center gap-2.5 bg-green-50 b-border rounded-2xl px-4 py-3">
-            <p className="text-xs font-black text-green-700">
-              Tautan sertifikat juga dikirim ke email kamu
+            <p className="text-xs font-bold text-green-800">
+              ✓ Konfirmasi pengumpulan tugas juga telah dikirim ke email kamu
             </p>
           </div>
         </div>

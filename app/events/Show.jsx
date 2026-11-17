@@ -1032,7 +1032,7 @@ export default function ShowEvent({
                     Kumpulkan Tugas
                   </Link>
                   <p className="text-[11px] text-slate-400 font-bold">
-                    Kumpulkan tugas untuk mendapatkan sertifikat otomatis.
+                    Kumpulkan tugas untuk syarat pembagian sertifikat (dikirim via WhatsApp).
                   </p>
                 </div>
               </div>

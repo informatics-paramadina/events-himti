@@ -4,7 +4,11 @@ export const runtime = "nodejs";
 import { randomUUID } from "crypto";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
-import { sendCertificateEmail } from "@/lib/mail";
+import {
+  sendTaskSubmissionEmail,
+  sendAdminTaskNotification,
+  sendCertificateEmail,
+} from "@/lib/mail";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_TYPES = [
@@ -14,20 +18,6 @@ const ALLOWED_TYPES = [
   "image/webp",
   "image/gif",
 ];
-
-async function generateCertificateNumber() {
-  for (let i = 0; i < 5; i++) {
-    const number = `HIMTI-${new Date().getFullYear()}-${randomUUID()
-      .replace(/-/g, "")
-      .slice(0, 12)
-      .toUpperCase()}`;
-    const existing = await prisma.submission.findUnique({
-      where: { certificateNumber: number },
-    });
-    if (!existing) return number;
-  }
-  throw new Error("Gagal membuat nomor sertifikat unik");
-}
 
 /* =======================
    GET → rekap pengumpulan tugas sebuah event
@@ -135,6 +125,23 @@ export async function POST(req, { params }) {
     }
 
     /* ===== UPLOAD CLOUDINARY ===== */
+    if (
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_API_KEY ||
+      !process.env.CLOUDINARY_API_SECRET
+    ) {
+      console.error(
+        "Cloudinary configuration missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, or CLOUDINARY_API_SECRET is not set.",
+      );
+      return Response.json(
+        {
+          message:
+            "Layanan upload file (Cloudinary) belum dikonfigurasi di server. Silakan hubungi admin.",
+        },
+        { status: 500 },
+      );
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const uploadResult = await new Promise((resolve, reject) => {
@@ -151,35 +158,61 @@ export async function POST(req, { params }) {
     });
 
     /* ===== SIMPAN SUBMISSION ===== */
-    const certificateNumber = await generateCertificateNumber();
     const submission = await prisma.submission.create({
       data: {
         eventId,
         participantId: participant.id,
         fileUrl: uploadResult.secure_url,
         fileName: file.name,
-        certificateNumber,
       },
       include: { participant: true, event: true },
     });
 
-    /* ===== KIRIM EMAIL SERTIFIKAT ===== */
-    const origin = new URL(req.url).origin;
-    const certificateUrl = `${origin}/api/sertifikat/${submission.id}`;
+    /* ===== KIRIM EMAIL NOTIFIKASI PENGUMPULAN TUGAS ===== */
+    // 1. Kirim notifikasi konfirmasi ke peserta (sertifikat akan dikirim via Google Drive WhatsApp)
     try {
-      await sendCertificateEmail(
-        participant.email,
+      await sendTaskSubmissionEmail({
+        email: participant.email,
         participant,
         event,
-        certificateUrl,
-        certificateNumber,
-      );
+        submission,
+      });
     } catch (emailError) {
-      console.error("Warning: Email sertifikat gagal terkirim:", emailError.message);
+      console.error(
+        "Warning: Email konfirmasi tugas ke peserta gagal terkirim:",
+        emailError.message,
+      );
+    }
+
+    // 2. Kirim notifikasi ke admin/panitia jika ADMIN_EMAIL atau NOTIFY_ADMIN_SUBMISSION diset
+    const adminEmail =
+      process.env.ADMIN_EMAIL ||
+      (process.env.NOTIFY_ADMIN_SUBMISSION === "true"
+        ? process.env.SMTP_USER
+        : null);
+
+    if (adminEmail) {
+      try {
+        await sendAdminTaskNotification({
+          targetEmail: adminEmail,
+          participant,
+          event,
+          submission,
+        });
+      } catch (adminError) {
+        console.error(
+          "Warning: Email notifikasi tugas ke admin gagal terkirim:",
+          adminError.message,
+        );
+      }
     }
 
     return Response.json(
-      { ...submission, certificateUrl },
+      {
+        ...submission,
+        message:
+          "Tugas berhasil dikumpulkan. Sertifikat akan dibagikan oleh panitia melalui Google Drive via WhatsApp.",
+      },
       { status: 201 },
     );
   } catch (error) {

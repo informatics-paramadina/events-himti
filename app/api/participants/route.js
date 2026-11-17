@@ -111,6 +111,23 @@ export async function POST(req) {
         );
       }
 
+      if (
+        !process.env.CLOUDINARY_CLOUD_NAME ||
+        !process.env.CLOUDINARY_API_KEY ||
+        !process.env.CLOUDINARY_API_SECRET
+      ) {
+        console.error(
+          "Cloudinary configuration missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, or CLOUDINARY_API_SECRET is not set.",
+        );
+        return Response.json(
+          {
+            message:
+              "Layanan upload file (Cloudinary) belum dikonfigurasi di server. Silakan hubungi admin.",
+          },
+          { status: 500 },
+        );
+      }
+
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 

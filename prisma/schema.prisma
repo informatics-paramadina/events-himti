@@ -80,11 +80,11 @@ model Participant {
 }
 
 model Submission {
-  id            String   @id @default(cuid())
-  fileUrl       String
-  fileName      String?
-  certificateNumber String @unique
-  submittedAt   DateTime @default(now())
+  id                String   @id @default(cuid())
+  fileUrl           String
+  fileName          String?
+  certificateNumber String?  @unique
+  submittedAt       DateTime @default(now())
 
   eventId       String
   event         Event       @relation(fields: [eventId], references: [id])
